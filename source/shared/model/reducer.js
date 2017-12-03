@@ -1,15 +1,30 @@
 import { createDuck } from 'redux-duck';
 
-import { EMPTY_NODE } from 'shared/model/constants';
+import { EMPTY_NODE, BOX_TYPE, ROOT_TYPE } from 'shared/model/constants';
 
 const modelDuck = createDuck('model');
 
 
 const iniState = {
+    boxTypes: { // Flexibility of box types to create different components (screen, button, frames)
+        [BOX_TYPE]: {
+            type: BOX_TYPE,
+            style: {
+                borderWidth: 1,
+            },
+        },
+        [ROOT_TYPE]: {
+            type: ROOT_TYPE,
+            style: {
+                borderWidth: 0,
+            },
+        },
+    },
     nodes: {
         root: {
             ...EMPTY_NODE,
             id: 'root',
+            type: ROOT_TYPE,
         }
     },
     activeNodeId: EMPTY_NODE.id,
@@ -36,7 +51,7 @@ const modelReducer = modelDuck.createReducer({
     }) => ({
         ...state,
         activeNodeId: id,
-        nodes: {
+        nodes: {             // creates the nested structure as flat with parenId and childrenIds
             ...state.nodes,
             [id]: {
                 ...EMPTY_NODE,
@@ -54,7 +69,7 @@ const modelReducer = modelDuck.createReducer({
     [DRAW_NODE]: (state, { payload: { width, height }}) => {
         const activeNode = state.nodes[state.activeNodeId];
         const parentNode = state.nodes[activeNode.parentId];
-        const delta = activeNode.parentId === 'root' ? 0 : 1;
+        const delta = state.boxTypes[parentNode.type].style.borderWidth;
         return {
             ...state,
             activeNodeId: EMPTY_NODE.id,

@@ -12,3 +12,11 @@ export const getActiveNodeCoords = createSelector(
 
 export const getNode = (state, id) => state.model.nodes[id];
 export const getChildrens = (state, id) => state.model.nodes[id].childrenIds;
+
+export const getBoxStyle = createSelector(
+    getNode,
+    state => state.model.boxTypes,
+    (node, types) => types[node.type].style,
+);
+
+export const getActiveBoxStyle = state => getBoxStyle(state, state.model.activeNodeId);

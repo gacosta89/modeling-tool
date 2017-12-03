@@ -5,24 +5,19 @@ import styled from 'styled-components';
 
 import { setRootRel } from 'shared/model/reducer';
 
-import Button from 'material-ui/Button';
 import Paper from 'material-ui/Paper';
 
 import DrawingArea from 'shared/model/view/drawingArea';
 import RenderingArea from 'shared/model/view/renderingArea';
+import ToolBar from 'shared/model/view/toolbar';
 
 const PaperContainer = styled(Paper)`
     display: flex;
     flexDirection: column;
     flex: 3;
     padding: 10px;
+    position: relative;
 `;
-
-const Header = styled.div`
-    display: flex;
-    justifyContent: flex-start;
-`;
-
 
 @connect(
     null,
@@ -39,13 +34,7 @@ class Editor extends Component {
     render () {
         return (
             <PaperContainer>
-                <Header>
-                    <Button
-                        raised
-                    >
-                        TOOLS
-                    </Button>
-                </Header>
+                <ToolBar />
                 <DrawingArea />
                 <RenderingArea
                     ref={ renderingArea => { this.renderingArea = renderingArea; }}

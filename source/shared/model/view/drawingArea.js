@@ -2,7 +2,10 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
 import { drawNode } from 'shared/model/reducer';
-import { getSelectionActive, getActiveNodeCoords } from 'shared/model/selectors';
+import {
+    getSelectionActive,
+    getActiveNodeCoords,
+    getActiveBoxStyle } from 'shared/model/selectors';
 
 import styled from 'styled-components';
 
@@ -19,19 +22,22 @@ const SelectionBox = styled.div`
     position: fixed;
 `;
 
-const getBoxSize = ({ absX, absY, currX, currY }) => ({
-    width: Math.abs(currX - absX),
+const getBoxSize = ({ absX, absY, currX, currY }) => ({ // compute the selection box size
+    width: Math.abs(currX - absX), // TODO: compute width height, right and bottom when inversing the selection box
     height: Math.abs(currY - absY),
-    [ Math.sign(currY - absY) > 0 ? 'top' : 'bottom']: absY,
-    [ Math.sign(currX - absX) > 0 ? 'left' : 'right']: absX,
+    top: absY,
+    left: absX,
 });
+
+// Draw the selection box
 
 @connect(
     state => ({
         coords: getActiveNodeCoords(state),
+        boxStyle: getActiveBoxStyle(state),
     }),
     dispatch => ({
-        onMouseUp: params => dispatch(drawNode(params)),
+        onMouseUp: params => dispatch(drawNode(params)), // draw the node in the rendering area
     })
 )
 class SelectionBoxContainer extends Component {
@@ -46,7 +52,7 @@ class SelectionBoxContainer extends Component {
     }
 
     onMouseMove = e => {
-        e.preventDefault();
+        e.preventDefault(); // prevent the page to scroll
         this.setState({
             currX: e.pageX,
             currY: e.pageY,
@@ -55,18 +61,18 @@ class SelectionBoxContainer extends Component {
 
     onMouseUp = () => {
         const { absX, absY, currX, currY } = this.state;
-        this.props.onMouseUp({
+        this.props.onMouseUp({ // compute the final width and height of the box
             width: currX - absX,
             height: currY - absY,
         });
     }
 
-    componentDidMount () {
+    componentDidMount () { // listen to mousemove events when the selection is active
         window.addEventListener('mousemove', this.onMouseMove);
         window.addEventListener('mouseup', this.onMouseUp);
     }
 
-    componentWillUnmount () {
+    componentWillUnmount () { // clean listeners when unmounting
         window.removeEventListener('mousemove', this.onMouseMove);
         window.removeEventListener('mouseup', this.onMouseUp);
     }
@@ -74,7 +80,8 @@ class SelectionBoxContainer extends Component {
 
     render () {
         const style = getBoxSize(this.state);
-        return <SelectionBox style={style} />;
+        const { boxStyle } = this.props;
+        return <SelectionBox style={{ ...boxStyle, ...style }} />;
     }
 }
 
@@ -90,8 +97,5 @@ export default connect(
     state => ({
         selectionActive: getSelectionActive(state),
     }),
-    dispatch => ({
-        onMouseDown: params => dispatch(drawNode(params))
-    })
 )(DrawingAreaContainer);
 

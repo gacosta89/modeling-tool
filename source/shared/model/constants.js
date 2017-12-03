@@ -1,3 +1,6 @@
+export const BOX_TYPE = 'box';
+export const ROOT_TYPE = 'root';
+
 export const EMPTY_NODE = {
     parentId: '',
     id: '@@EMPTY_NODE',
@@ -8,6 +11,6 @@ export const EMPTY_NODE = {
     absY: 0,
     width: 0,
     height: 0,
-    type: 'box',
+    type: BOX_TYPE,
     show: false,
 };
