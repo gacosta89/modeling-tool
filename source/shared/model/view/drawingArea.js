@@ -1,13 +1,25 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { connect } from 'react-redux';
-
-import { drawNode } from 'shared/model/reducer';
-import {
-    getSelectionActive,
-    getActiveNodeCoords,
-    getActiveBoxStyle } from 'shared/model/selectors';
-
 import styled from 'styled-components';
+
+import { getSelectionActive } from 'shared/model/selectors';
+
+import SelectionBox from 'shared/model/view/selectionBox';
+
+/*
+Description: DrawingArea (styled-components)
+
+Rationale: I find much easier to have styles and html within the same file, as their logic is cohesive.
+   This is also the rationale behind react components, as keeping the html separated from the js (view logic)
+   is a separation of technologies, not concerns. And in general this separation of technologies creates
+   indirections that will make things more difficult.
+
+   Separated js files from html files will always be coupled and that is fine because it is cohesive logic.
+   So why not put them in the same place --> react component.
+
+   The same applies to styles. A react component is a cohesive component of rendering logic.
+   react component = HTML + JS + CSS
+ */
 
 const DrawingArea = styled.div`
     width: 1px;
@@ -17,81 +29,37 @@ const DrawingArea = styled.div`
     overflow: visible;
 `;
 
-const SelectionBox = styled.div`
-    border: 1px dashed black;
-    position: fixed;
-`;
 
-const getBoxSize = ({ absX, absY, currX, currY }) => ({ // compute the selection box size
-    width: Math.abs(currX - absX), // TODO: compute width height, right and bottom when inversing the selection box
-    height: Math.abs(currY - absY),
-    top: absY,
-    left: absX,
-});
+/*
+Description: DrawingAreaContainer (react) is the component that renders the active selection box.
 
-// Draw the selection box
+Components: Presentational layer.
 
-@connect(
-    state => ({
-        coords: getActiveNodeCoords(state),
-        boxStyle: getActiveBoxStyle(state),
-    }),
-    dispatch => ({
-        onMouseUp: params => dispatch(drawNode(params)), // draw the node in the rendering area
-    })
-)
-class SelectionBoxContainer extends Component {
-    constructor (props) {
-        super(props);
+Rationale: React render function is declarative, meaning it takes some props (style, handler, ids)
+   and returns a HTML description of those props.
 
-        this.state = {
-            ...props.coords,
-            currX: props.coords.absX,
-            currY: props.coords.absY,
-        };
-    }
-
-    onMouseMove = e => {
-        e.preventDefault(); // prevent the page to scroll
-        this.setState({
-            currX: e.pageX,
-            currY: e.pageY,
-        });
-    }
-
-    onMouseUp = () => {
-        const { absX, absY, currX, currY } = this.state;
-        this.props.onMouseUp({ // compute the final width and height of the box
-            width: currX - absX,
-            height: currY - absY,
-        });
-    }
-
-    componentDidMount () { // listen to mousemove events when the selection is active
-        window.addEventListener('mousemove', this.onMouseMove);
-        window.addEventListener('mouseup', this.onMouseUp);
-    }
-
-    componentWillUnmount () { // clean listeners when unmounting
-        window.removeEventListener('mousemove', this.onMouseMove);
-        window.removeEventListener('mouseup', this.onMouseUp);
-    }
-
-
-    render () {
-        const style = getBoxSize(this.state);
-        const { boxStyle } = this.props;
-        return <SelectionBox style={{ ...boxStyle, ...style }} />;
-    }
-}
+   The render function (line 101) is a pure function, and again super easy to test.
+ */
 
 const DrawingAreaContainer = ({ selectionActive }) =>
     <DrawingArea>
         {
             selectionActive &&
-                <SelectionBoxContainer />
+                <SelectionBox />
         }
    </DrawingArea>;
+
+/*
+Description: Connect (react-redux) glue between the store (the object that contains the tree state and reducers)
+   and a components. react-redux is the official binding library between react and redux by the redux author.
+
+Rationale: It allows a clear separation between presentational components and "smart" higher order components.
+   It is a layer of indirection that allows to literally plug plain presentational components
+   (like DrawingAreaContainer) to the business layer.
+
+   In this simple case connect is reading if the selection is active from the state, using the
+   getSelectionActive selector.
+ */
 
 export default connect(
     state => ({

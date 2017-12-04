@@ -1,38 +1,27 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { generate } from 'shortid';
-import { createSelector } from 'reselect';
 import styled from 'styled-components';
 
-import { createNode } from 'shared/model/reducer';
+import { tapNode } from 'shared/model/reducer';
 
-import { getNode, getBoxStyle, getChildrens } from 'shared/model/selectors';
-
-const getStyle = createSelector( // generates the style out of a node
-    getNode,
-    getBoxStyle,
-    (node, style) => node.id === 'root' ? {
-        flex: 1,
-        border: 'none',
-        position: 'relative',
-    } : {
-        ...style,
-        width: node.width,
-        height: node.height,
-        display: node.show ? 'inline' : 'none',
-        top: node.relY,
-        left: node.relX,
-    }
-);
+import { getChildrens, getStyle } from 'shared/model/selectors';
 
 const Box = styled.div`
     position: absolute;
-    border: 1px solid black;
+    border: solid 1px black;
+
 `;
 
 /*
-This is the component that renders the nodes nested structure
-*/
+Description: ParentFactory (react and react-redux). Presentational layer.
+   This is the component that renders the nodes nested structure.
+
+Rationale: with react is supper easy to render a complex nested structure out of a data model.
+   Its declarative, meaning it takes some props (style, handler, ids)
+   and returns a HTML description of those props.
+
+ */
 
 const ParentFactory = connect(
     (state, ownProps) => ({
@@ -45,7 +34,7 @@ const ParentFactory = connect(
             if (e.button === 2) { // dont create the node if mouse down was with secondary button
                 return;
             } else {
-                dispatch(createNode({ // create a new node with absX and absY as left top coordinates
+                dispatch(tapNode({ // create a new node with absX and absY as left top coordinates
                     absX: e.pageX,
                     absY: e.pageY,
                     id: generate(),
@@ -58,7 +47,7 @@ const ParentFactory = connect(
     ({ style, handler, ids }) =>
         <Box
             style={style}
-            onMouseDown={ handler }
+            onMouseDown={handler}
         >
             {
                 ids.map(                                     // recursively render child nodes

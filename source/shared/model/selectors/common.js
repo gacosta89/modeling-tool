@@ -1,9 +1,7 @@
 import { createSelector } from 'reselect';
 
-import { EMPTY_NODE } from 'shared/model/constants';
-
 export const getSelectionActive = state =>
-    state.model.activeNodeId !== EMPTY_NODE.id;
+    state.model.selectionActive;
 
 export const getActiveNodeCoords = createSelector(
     state => state.model.nodes[state.model.activeNodeId],

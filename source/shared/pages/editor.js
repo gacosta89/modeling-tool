@@ -16,7 +16,6 @@ const PaperContainer = styled(Paper)`
     flexDirection: column;
     flex: 3;
     padding: 10px;
-    position: relative;
 `;
 
 @connect(

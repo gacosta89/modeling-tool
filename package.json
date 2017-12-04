@@ -46,7 +46,7 @@
     "react-router-redux": "^4.0.6",
     "redux": "^3.6.0",
     "redux-duck": "^1.0.2",
-    "redux-saga": "^0.12.0",
+    "redux-saga": "^0.16.0",
     "reselect": "^3.0.1",
     "shortid": "^2.2.8",
     "styled-components": "^1.4.2"
