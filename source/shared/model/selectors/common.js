@@ -8,13 +8,9 @@ export const getActiveNodeCoords = createSelector(
     node => ({ absX: node.absX, absY: node.absY }),
 );
 
+export const getActiveTool = state => state.model.activeTool;
+
 export const getNode = (state, id) => state.model.nodes[id];
 export const getChildrens = (state, id) => state.model.nodes[id].childrenIds;
 
-export const getBoxStyle = createSelector(
-    getNode,
-    state => state.model.boxTypes,
-    (node, types) => types[node.type].style,
-);
-
-export const getActiveBoxStyle = state => getBoxStyle(state, state.model.activeNodeId);
+export const getIniTap = state => state.model.iniTap;

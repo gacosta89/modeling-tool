@@ -4,6 +4,8 @@ import {
     EMPTY_NODE,
     BOX_TOOL,
     SELECT_TOOL,
+    RESIZE_TOOL,
+    MOVE_TOOL,
     DEFAULT_TYPE_OBJ,
     BACKGROUND_TYPE,
     BOX_TYPE,
@@ -67,6 +69,10 @@ const iniState = {
     activeNodeId: EMPTY_NODE.id,
     selectionActive: false,
     activeTool: BOX_TOOL,
+    iniTap: {
+        absX: 0,
+        absY: 0,
+    },
 };
 
 /*
@@ -103,6 +109,109 @@ export const setBackgroundPicSrc = namespace.createAction(SET_BACKGROUND_PIC_SRC
 export const SET_TOOL = namespace.defineType('set_tool');
 export const setTool = namespace.createAction(SET_TOOL);
 
+
+const toolMAP = {
+    [TAP_NODE]: {
+        [SELECT_TOOL]: (state, { payload: { parentId }}) => ({ ...state, activeNodeId: parentId }),
+        [BOX_TOOL]: (state, {
+            payload: {
+                id,
+                parentId,
+                absX = 20,
+                absY = 20,
+            }
+        }) => ({
+            ...state,
+            activeNodeId: id,
+            selectionActive: true,
+            nodes: {             // creates the nested structure as flat with parenId and childrenIds
+                ...state.nodes,
+                [id]: {
+                    ...EMPTY_NODE,
+                    id,
+                    parentId,
+                    absX: absX,
+                    absY: absY,
+                },
+                [parentId]: {
+                    ...state.nodes[parentId],
+                    childrenIds: [...state.nodes[parentId].childrenIds, id],
+                },
+            },
+        }),
+        [RESIZE_TOOL]: state => ({
+            ...state,
+            selectionActive: true,
+        }),
+        [MOVE_TOOL]: (state, { payload: { absX, absY }}) => ({
+            ...state,
+            iniTap: { absX, absY },
+            selectionActive: true,
+        }),
+    },
+    [DRAW_NODE]: {
+        [BOX_TOOL]: (state, { payload: { width, height }}) => {
+            const activeNode = state.nodes[state.activeNodeId];
+            const parentNode = state.nodes[activeNode.parentId];
+            const delta = state.boxTypes[parentNode.type].style.borderWidth;
+            return {
+                ...state,
+                selectionActive: false,
+                nodes: {
+                    ...state.nodes,
+                    [state.activeNodeId]: {
+                        ...state.nodes[state.activeNodeId],
+                        relX: activeNode.absX - parentNode.absX - delta,
+                        relY: activeNode.absY - parentNode.absY - delta,
+                        width,
+                        height,
+                        show: true,
+                    },
+                },
+            };
+        },
+        [RESIZE_TOOL]: (state, { payload: { width, height }}) => ({
+            ...state,
+            selectionActive: false,
+            nodes: {
+                ...state.nodes,
+                [state.activeNodeId]: {
+                    ...state.nodes[state.activeNodeId],
+                    width,
+                    height,
+                }
+            }
+        }),
+        [MOVE_TOOL]: (state, { payload: { deltaX, deltaY }}) => {
+            const activeNode = state.nodes[state.activeNodeId];
+            const parentNode = state.nodes[activeNode.parentId];
+            const borderWidth = state.boxTypes[parentNode.type].style.borderWidth;
+            return {
+                ...state,
+                selectionActive: false,
+                iniTap: {
+                    absX: 0,
+                    absY: 0
+                },
+                nodes: {
+                    ...state.nodes,
+                    [state.activeNodeId]: {
+                        ...state.nodes[state.activeNodeId],
+                        absY: activeNode.absY + deltaY, // TODO: update abs positions of child nodes
+                        absX: activeNode.absX + deltaX,
+                        relX: activeNode.absX + deltaX - parentNode.absX - borderWidth,
+                        relY: activeNode.absY + deltaY - parentNode.absY - borderWidth,
+                    },
+                },
+            };
+        },
+    }
+};
+
+const selectReducer = handlers => (state, action) =>
+      handlers.hasOwnProperty(state.activeTool) ?
+      handlers[state.activeTool](state, action) : state;
+
 /*
   Description: modelReducer (redux-duck and redux) This reducer handles the creation and dimentions of the nodes.
 
@@ -125,55 +234,8 @@ export const setTool = namespace.createAction(SET_TOOL);
 */
 
 const modelReducer = namespace.createReducer({
-    [TAP_NODE]: (state, {
-        payload: {
-            id,
-            parentId,
-            absX = 20,
-            absY = 20,
-        }
-    }) => state.activeTool === SELECT_TOOL ? {
-        ...state,
-        activeNodeId: parentId,
-    } : {
-        ...state,
-        activeNodeId: id,
-        selectionActive: true,
-        nodes: {             // creates the nested structure as flat with parenId and childrenIds
-            ...state.nodes,
-            [id]: {
-                ...EMPTY_NODE,
-                id,
-                parentId,
-                absX: absX,
-                absY: absY,
-            },
-            [parentId]: {
-                ...state.nodes[parentId],
-                childrenIds: [...state.nodes[parentId].childrenIds, id],
-            },
-        },
-    },
-    [DRAW_NODE]: (state, { payload: { width, height }}) => {
-        const activeNode = state.nodes[state.activeNodeId];
-        const parentNode = state.nodes[activeNode.parentId];
-        const delta = state.boxTypes[parentNode.type].style.borderWidth;
-        return {
-            ...state,
-            selectionActive: false,
-            nodes: {
-                ...state.nodes,
-                [state.activeNodeId]: {
-                    ...state.nodes[state.activeNodeId],
-                    relX: activeNode.absX - parentNode.absX - delta,
-                    relY: activeNode.absY - parentNode.absY - delta,
-                    width,
-                    height,
-                    show: true,
-                },
-            },
-        };
-    },
+    [TAP_NODE]: selectReducer(toolMAP[TAP_NODE]),
+    [DRAW_NODE]: selectReducer(toolMAP[DRAW_NODE]),
     [SET_ROOT_REL]: (state, { payload: { absX, absY }}) => ({
         ...state,
         nodes: {

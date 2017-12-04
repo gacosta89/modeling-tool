@@ -13,9 +13,15 @@ import ToolBar from 'shared/model/view/toolbar';
 
 const PaperContainer = styled(Paper)`
     display: flex;
+    flex: 1;
     flexDirection: column;
-    flex: 3;
     padding: 10px;
+`;
+
+const Editor = styled.div`
+    display: flex;
+    flex: 1;
+    flexDirection: column;
 `;
 
 @connect(
@@ -24,7 +30,7 @@ const PaperContainer = styled(Paper)`
         onMount: params => dispatch(setRootRel(params))
     })
 )
-class Editor extends Component {
+class EditorContainer extends Component {
     componentDidMount () {
         const node = ReactDOM.findDOMNode(this.renderingArea);
         this.props.onMount({ absX: node.offsetLeft, absY: node.offsetTop });
@@ -32,16 +38,18 @@ class Editor extends Component {
 
     render () {
         return (
-            <PaperContainer>
+            <Editor>
                 <ToolBar />
-                <DrawingArea />
-                <RenderingArea
-                    ref={ renderingArea => { this.renderingArea = renderingArea; }}
-                    id="root"
-                />
-            </PaperContainer>
+                <PaperContainer>
+                    <DrawingArea />
+                    <RenderingArea
+                        ref={ renderingArea => { this.renderingArea = renderingArea; }}
+                        id="root"
+                    />
+                </PaperContainer>
+            </Editor>
         );
     }
 }
 
-export default Editor;
+export default EditorContainer;

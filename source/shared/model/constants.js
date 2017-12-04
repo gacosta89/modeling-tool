@@ -27,3 +27,5 @@ export const EMPTY_NODE = {
 
 export const BOX_TOOL = 'box';
 export const SELECT_TOOL = 'select';
+export const RESIZE_TOOL = 'resize';
+export const MOVE_TOOL = 'move';

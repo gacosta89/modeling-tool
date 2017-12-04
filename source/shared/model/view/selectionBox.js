@@ -4,7 +4,11 @@ import { connect } from 'react-redux';
 import { drawNode } from 'shared/model/reducer';
 import {
     getActiveNodeCoords,
-    getActiveBoxStyle } from 'shared/model/selectors';
+    getActiveNodeDimentions,
+    getIniTap,
+    getActiveTool } from 'shared/model/selectors';
+
+import { MOVE_TOOL } from 'shared/model/constants';
 
 import styled from 'styled-components';
 
@@ -14,11 +18,11 @@ const SelectionBox = styled.div`
     position: fixed;
 `;
 
-const getBoxSize = ({ absX, absY, currX, currY }) => ({ // compute the selection box size
-    width: Math.abs(currX - absX), // TODO: compute width height, right and bottom when inversing the selection box
-    height: Math.abs(currY - absY),
-    top: absY,
-    left: absX,
+const getBoxSize = ({ ini, currX, currY, deltaX, deltaY }) => ({ // compute the selection box size
+    width: Math.abs(currX - ini.absX), // TODO: compute width height, right and bottom when inversing the selection box
+    height: Math.abs(currY - ini.absY),
+    top: ini.absY + deltaY,
+    left: ini.absX + deltaX,
 });
 
 // Draw the selection box
@@ -26,8 +30,9 @@ const getBoxSize = ({ absX, absY, currX, currY }) => ({ // compute the selection
 @connect(
     state => ({
         coords: getActiveNodeCoords(state),
-        /* size: getActiveNodeSize(state),*/
-        boxStyle: getActiveBoxStyle(state),
+        dimentions: getActiveNodeDimentions(state),
+        translate: getActiveTool(state) === MOVE_TOOL,
+        iniTap: getIniTap(state),
     }),
     dispatch => ({
         onMouseUp: params => dispatch(drawNode(params)), // draw the node in the rendering area
@@ -37,26 +42,51 @@ class SelectionBoxContainer extends Component {
     constructor (props) {
         super(props);
 
+        const { absX, absY } = props.coords;
+        const { width, height } = props.dimentions;
+
+        const currX = absX + width;
+        const currY = absY + height;
+
         this.state = {
-            ...props.coords,
-            currX: props.coords.absX,
-            currY: props.coords.absY,
+            ini: {
+                absX,
+                absY,
+                currX,
+                currY,
+            },
+            currX,
+            currY,
+            deltaX: 0,
+            deltaY: 0,
         };
     }
 
     onMouseMove = e => {
         e.preventDefault(); // prevent the page to scroll
-        this.setState({
-            currX: e.pageX,
-            currY: e.pageY,
-        });
+
+        const { translate, iniTap } = this.props;
+
+        if (translate) {
+            this.setState({
+                deltaX: e.pageX - iniTap.absX,
+                deltaY: e.pageY - iniTap.absY,
+            });
+        } else {
+            this.setState({
+                currX: e.pageX,
+                currY: e.pageY,
+            });
+        }
     }
 
     onMouseUp = () => {
-        const { absX, absY, currX, currY } = this.state;
-        this.props.onMouseUp({ // compute the final width and height of the box
-            width: currX - absX,
-            height: currY - absY,
+        const { ini, currX, currY, deltaX, deltaY } = this.state;
+        this.props.onMouseUp({ // compute the final position  and dimentions of the box
+            deltaX,
+            deltaY,
+            width: currX - ini.absX,
+            height: currY - ini.absY,
         });
     }
 
@@ -73,8 +103,7 @@ class SelectionBoxContainer extends Component {
 
     render () {
         const style = getBoxSize(this.state);
-        const { boxStyle } = this.props;
-        return <SelectionBox style={{ ...boxStyle, ...style }} />;
+        return <SelectionBox style={style} />;
     }
 }
 

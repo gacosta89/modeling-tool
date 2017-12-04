@@ -7,10 +7,15 @@ import { setBackgroundPic, setTool } from 'shared/model/reducer';
 import Button from 'material-ui/Button';
 import FileButton from 'shared/ui-kit/fileButton';
 
-import { BOX_TOOL, SELECT_TOOL } from 'shared/model/constants';
+import {
+    BOX_TOOL,
+    SELECT_TOOL,
+    RESIZE_TOOL,
+    MOVE_TOOL } from 'shared/model/constants';
 
 const ToolBar = styled.div`
     display: flex;
+    padding-bottom: 10px;
     justifyContent: flex-start;
 `;
 
@@ -27,6 +32,18 @@ const ToolBarContainer = ({ onFiles, onSetTool }) =>
             onClick={onSetTool(SELECT_TOOL)}
         >
             SELECT
+        </Button>
+        <Button
+            raised
+            onClick={onSetTool(RESIZE_TOOL)}
+        >
+            RESIZE
+        </Button>
+        <Button
+            raised
+            onClick={onSetTool(MOVE_TOOL)}
+        >
+            MOVE
         </Button>
         <FileButton
             raised

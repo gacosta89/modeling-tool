@@ -1,6 +1,6 @@
 import { createSelector } from 'reselect';
 
-import { getNode, getBoxStyle } from 'shared/model/selectors';
+import { getNode } from 'shared/model/selectors';
 import { ROOT_TYPE, BACKGROUND_TYPE } from 'shared/model/constants';
 
 /*
@@ -20,6 +20,7 @@ Rationale: they are a thin layer of abstracion that allows to derive data from t
    Its "observing" the node through immutability
 */
 
+
 const getDimentions = createSelector( // generates node dimensions
     getNode,
     node => [ROOT_TYPE, BACKGROUND_TYPE].includes(node.type) ? {} : {
@@ -29,6 +30,14 @@ const getDimentions = createSelector( // generates node dimensions
         left: node.relX,
     }
 );
+
+export const getBoxStyle = createSelector(
+    getNode,
+    state => state.model.boxTypes,
+    (node, types) => types[node.type].style,
+);
+
+export const getActiveBoxStyle = state => getBoxStyle(state, state.model.activeNodeId);
 
 const getNodeStyle = createSelector( // generates the style out of a node
     getNode,
@@ -51,3 +60,5 @@ export const getStyle = createSelector(
         ...style,
     })
 );
+
+export const getActiveNodeDimentions = state => getDimentions(state, state.model.activeNodeId);
