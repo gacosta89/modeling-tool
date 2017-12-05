@@ -6,10 +6,24 @@ import {
     SELECT_TOOL,
     RESIZE_TOOL,
     MOVE_TOOL,
+    DELETE_TOOL,
     DEFAULT_TYPE_OBJ,
     BACKGROUND_TYPE,
     BOX_TYPE,
     ROOT_TYPE } from 'shared/model/constants';
+
+import {
+    selectTool,
+    createNode,
+    deleteNode,
+    activateNodeAndSelection,
+    activateAndSetIniAbs,
+    drawNewNode,
+    resizeNode,
+    moveNode,
+    setRootRelHandler,
+    setBackgroundPicHandler,
+    setToolHandler } from 'shared/model/reducer/handlers';
 
 /*
 Description: namespace (redux-duck) utility.
@@ -44,6 +58,7 @@ const iniState = {
                 border: 'none',
                 flex: 1,
                 position: 'relative',
+                overflow: 'hidden',
             },
         },
         [BACKGROUND_TYPE]: {
@@ -109,102 +124,40 @@ export const setBackgroundPicSrc = namespace.createAction(SET_BACKGROUND_PIC_SRC
 export const SET_TOOL = namespace.defineType('set_tool');
 export const setTool = namespace.createAction(SET_TOOL);
 
+/*
+Description: toolMAP "smart" reducer structure.
+
+The renderingArea component (/shared/model/view/renderingArea) dispatches TAP_NODE actions
+The drawingArea component (/shared/model/view/drawingArea) dispatches DRAW_NODE actions
+
+My idea with this structure is to make different things with the boxes when different tools are selected.
+
+So the structure is the following:
+
+toolMap = {
+    [ACTION_TYPE]: {
+         [TOOL_TYPE]: handler(...)
+    }
+}
+
+E.g.: when the user taps a node with the SELECT_TOOL active. The action type will be TAP_NODE,
+and the activeTool will be SELECT_TOOL, so the handler of the line 148 will be called.
+This selection of handler is done by the selectReducer util function (line 160) and used in lines 186 and 187
+
+*/
 
 const toolMAP = {
     [TAP_NODE]: {
-        [SELECT_TOOL]: (state, { payload: { parentId }}) => ({ ...state, activeNodeId: parentId }),
-        [BOX_TOOL]: (state, {
-            payload: {
-                id,
-                parentId,
-                absX = 20,
-                absY = 20,
-            }
-        }) => ({
-            ...state,
-            activeNodeId: id,
-            selectionActive: true,
-            nodes: {             // creates the nested structure as flat with parenId and childrenIds
-                ...state.nodes,
-                [id]: {
-                    ...EMPTY_NODE,
-                    id,
-                    parentId,
-                    absX: absX,
-                    absY: absY,
-                },
-                [parentId]: {
-                    ...state.nodes[parentId],
-                    childrenIds: [...state.nodes[parentId].childrenIds, id],
-                },
-            },
-        }),
-        [RESIZE_TOOL]: state => ({
-            ...state,
-            selectionActive: true,
-        }),
-        [MOVE_TOOL]: (state, { payload: { absX, absY }}) => ({
-            ...state,
-            iniTap: { absX, absY },
-            selectionActive: true,
-        }),
+        [SELECT_TOOL]: selectTool,
+        [BOX_TOOL]: createNode,
+        [RESIZE_TOOL]: activateNodeAndSelection,
+        [MOVE_TOOL]: activateAndSetIniAbs,
+        [DELETE_TOOL]: deleteNode,
     },
     [DRAW_NODE]: {
-        [BOX_TOOL]: (state, { payload: { width, height }}) => {
-            const activeNode = state.nodes[state.activeNodeId];
-            const parentNode = state.nodes[activeNode.parentId];
-            const delta = state.boxTypes[parentNode.type].style.borderWidth;
-            return {
-                ...state,
-                selectionActive: false,
-                nodes: {
-                    ...state.nodes,
-                    [state.activeNodeId]: {
-                        ...state.nodes[state.activeNodeId],
-                        relX: activeNode.absX - parentNode.absX - delta,
-                        relY: activeNode.absY - parentNode.absY - delta,
-                        width,
-                        height,
-                        show: true,
-                    },
-                },
-            };
-        },
-        [RESIZE_TOOL]: (state, { payload: { width, height }}) => ({
-            ...state,
-            selectionActive: false,
-            nodes: {
-                ...state.nodes,
-                [state.activeNodeId]: {
-                    ...state.nodes[state.activeNodeId],
-                    width,
-                    height,
-                }
-            }
-        }),
-        [MOVE_TOOL]: (state, { payload: { deltaX, deltaY }}) => {
-            const activeNode = state.nodes[state.activeNodeId];
-            const parentNode = state.nodes[activeNode.parentId];
-            const borderWidth = state.boxTypes[parentNode.type].style.borderWidth;
-            return {
-                ...state,
-                selectionActive: false,
-                iniTap: {
-                    absX: 0,
-                    absY: 0
-                },
-                nodes: {
-                    ...state.nodes,
-                    [state.activeNodeId]: {
-                        ...state.nodes[state.activeNodeId],
-                        absY: activeNode.absY + deltaY, // TODO: update abs positions of child nodes
-                        absX: activeNode.absX + deltaX,
-                        relX: activeNode.absX + deltaX - parentNode.absX - borderWidth,
-                        relY: activeNode.absY + deltaY - parentNode.absY - borderWidth,
-                    },
-                },
-            };
-        },
+        [BOX_TOOL]: drawNewNode,
+        [RESIZE_TOOL]: resizeNode,
+        [MOVE_TOOL]: moveNode,
     }
 };
 
@@ -236,31 +189,9 @@ const selectReducer = handlers => (state, action) =>
 const modelReducer = namespace.createReducer({
     [TAP_NODE]: selectReducer(toolMAP[TAP_NODE]),
     [DRAW_NODE]: selectReducer(toolMAP[DRAW_NODE]),
-    [SET_ROOT_REL]: (state, { payload: { absX, absY }}) => ({
-        ...state,
-        nodes: {
-            ...state.nodes,
-            root: {
-                ...state.nodes.root,
-                absX,
-                absY
-            },
-        },
-    }),
-    [SET_BACKGROUND_PIC_SRC]: (state, { payload: { src }}) => ({
-        ...state,
-        nodes: {
-            ...state.nodes,
-            [state.activeNodeId]: {
-                ...state.nodes[state.activeNodeId],
-                backgroundImgSrc: src,
-            },
-        },
-    }),
-    [SET_TOOL]: (state, { payload: { tool: activeTool }}) => ({
-        ...state,
-        activeTool,
-    }),
+    [SET_ROOT_REL]: setRootRelHandler,
+    [SET_BACKGROUND_PIC_SRC]: setBackgroundPicHandler,
+    [SET_TOOL]: setToolHandler,
 }, iniState);
 
 export default modelReducer;

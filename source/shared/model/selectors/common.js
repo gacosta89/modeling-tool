@@ -5,7 +5,7 @@ export const getSelectionActive = state =>
 
 export const getActiveNodeCoords = createSelector(
     state => state.model.nodes[state.model.activeNodeId],
-    node => ({ absX: node.absX, absY: node.absY }),
+    node => ({ absX: node.absX, absY: node.absY, relX: node.relX, relY: node.relY }),
 );
 
 export const getActiveTool = state => state.model.activeTool;

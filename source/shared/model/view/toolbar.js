@@ -9,6 +9,7 @@ import FileButton from 'shared/ui-kit/fileButton';
 
 import {
     BOX_TOOL,
+    DELETE_TOOL,
     SELECT_TOOL,
     RESIZE_TOOL,
     MOVE_TOOL } from 'shared/model/constants';
@@ -29,9 +30,9 @@ const ToolBarContainer = ({ onFiles, onSetTool }) =>
         </Button>
         <Button
             raised
-            onClick={onSetTool(SELECT_TOOL)}
+            onClick={onSetTool(DELETE_TOOL)}
         >
-            SELECT
+            DELETE
         </Button>
         <Button
             raised
@@ -44,6 +45,12 @@ const ToolBarContainer = ({ onFiles, onSetTool }) =>
             onClick={onSetTool(MOVE_TOOL)}
         >
             MOVE
+        </Button>
+        <Button
+            raised
+            onClick={onSetTool(SELECT_TOOL)}
+        >
+            SELECT
         </Button>
         <FileButton
             raised
