@@ -14,3 +14,6 @@ export const getNode = (state, id) => state.model.nodes[id];
 export const getChildrens = (state, id) => state.model.nodes[id].childrenIds;
 
 export const getIniTap = state => state.model.iniTap;
+
+export const getActiveNodeField = (state, field) =>
+    state.model.nodes[state.model.activeNodeId][field] || '';

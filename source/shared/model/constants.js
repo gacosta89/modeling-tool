@@ -1,4 +1,4 @@
-
+// boxes types
 export const DEFAULT_TYPE_OBJ = {
     type: 'default',
     style: {
@@ -9,6 +9,8 @@ export const DEFAULT_TYPE_OBJ = {
 export const BOX_TYPE = 'box';
 export const ROOT_TYPE = 'root';
 export const BACKGROUND_TYPE = 'background';
+
+// empty node obj
 
 export const EMPTY_NODE = {
     parentId: '',
@@ -23,7 +25,15 @@ export const EMPTY_NODE = {
     backgroundImgSrc: '',
     type: BOX_TYPE,
     show: false,
+    name: '',
+    description: '',
 };
+
+// node fields
+export const NODE_NAME = 'name';
+export const NODE_DESCRIPTION = 'description';
+
+// tools
 
 export const BOX_TOOL = 'box';
 export const SELECT_TOOL = 'select';

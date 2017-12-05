@@ -34,6 +34,7 @@ export const createNode = (state, {
             parentId,
             absX: absX,
             absY: absY,
+            level: state.nodes[parentId].level + 1,
         },
         [parentId]: {
             ...state.nodes[parentId],
@@ -159,3 +160,13 @@ export const setToolHandler = (state, { payload: { tool: activeTool }}) => ({
     activeTool,
 });
 
+export const setNodeField = (state, { payload: { field, value }}) => ({
+    ...state,
+    nodes: {
+        ...state.nodes,
+        [state.activeNodeId]: {
+            ...state.nodes[state.activeNodeId],
+            [field]: value,
+        },
+    },
+});

@@ -21,6 +21,7 @@ import {
     drawNewNode,
     resizeNode,
     moveNode,
+    setNodeField,
     setRootRelHandler,
     setBackgroundPicHandler,
     setToolHandler } from 'shared/model/reducer/handlers';
@@ -79,9 +80,10 @@ const iniState = {
             id: 'root',
             type: ROOT_TYPE,
             show: true,
+            level: 0,
         }
     },
-    activeNodeId: EMPTY_NODE.id,
+    activeNodeId: 'root',
     selectionActive: false,
     activeTool: BOX_TOOL,
     iniTap: {
@@ -123,6 +125,9 @@ export const setBackgroundPicSrc = namespace.createAction(SET_BACKGROUND_PIC_SRC
 
 export const SET_TOOL = namespace.defineType('set_tool');
 export const setTool = namespace.createAction(SET_TOOL);
+
+export const SET_FIELD = namespace.defineType('set_field');
+export const setField = namespace.createAction(SET_FIELD);
 
 /*
 Description: toolMAP "smart" reducer structure.
@@ -192,6 +197,7 @@ const modelReducer = namespace.createReducer({
     [SET_ROOT_REL]: setRootRelHandler,
     [SET_BACKGROUND_PIC_SRC]: setBackgroundPicHandler,
     [SET_TOOL]: setToolHandler,
+    [SET_FIELD]: setNodeField,
 }, iniState);
 
 export default modelReducer;

@@ -10,6 +10,7 @@ import Paper from 'material-ui/Paper';
 import DrawingArea from 'shared/model/view/drawingArea';
 import RenderingArea from 'shared/model/view/renderingArea';
 import ToolBar from 'shared/model/view/toolbar';
+import Description from 'shared/model/view/description';
 
 const PaperContainer = styled(Paper)`
     display: flex;
@@ -47,6 +48,7 @@ class EditorContainer extends Component {
                         id="root"
                     />
                 </PaperContainer>
+                <Description name="Super osiloscope"/>
             </Editor>
         );
     }
