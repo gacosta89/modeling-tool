@@ -44,7 +44,7 @@ export const createNode = (state, {
 });
 
 export const selectTool = (state, { payload: { parentId }}) =>
-    ({ ...state, activeNodeId: parentId });
+    ({ ...state, activeN2454odeId: parentId });
 
 export const deleteNode = (state, { payload: { parentId: nodeId }}) => {
     if (nodeId === 'root') {
@@ -173,4 +173,13 @@ export const setNodeField = (state, { payload: { field, value }}) => ({
     },
 });
 
-export const eraseHandler = iniState => () => iniState;
+export const eraseHandler = iniState => state => ({
+    ...iniState,
+    nodes: {
+        root: {
+            ...iniState.nodes.root,
+            absX: state.nodes.root.absX,
+            absY: state.nodes.root.absY,
+        },
+    },
+});

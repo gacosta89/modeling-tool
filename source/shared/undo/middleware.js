@@ -1,4 +1,7 @@
-import { getStorage, putStorage } from 'shared/app/utils';
+import {
+    getStorage,
+    putStorage,
+    removeStorage } from 'shared/app/utils';
 
 import {
     historyReducer,
@@ -43,7 +46,7 @@ const undoMiddleware = store => {
             return nextAction;
         } else if (action.type === ERASE) {
             undoState = historyReducer(undoState, action);
-            putStorage('history', undoState);
+            removeStorage('history', undoState);
         }
 
         return next(action);

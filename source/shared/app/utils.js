@@ -30,5 +30,8 @@ export const getStorage = key => {
     }
 };
 
+export const removeStorage = key => storageAvailable() ?
+    localStorage.removeItem(key) : undefined;
+
 export const putStorage = (key, value) => storageAvailable() ?
     localStorage.setItem(key, JSON.stringify(value)) : undefined;
