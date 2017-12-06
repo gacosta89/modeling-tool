@@ -52,9 +52,11 @@ export const deleteNode = (state, { payload: { parentId: nodeId }}) => {
     }
     const parentId = state.nodes[nodeId].parentId;
     const { [nodeId]: remove, ...nodes } = state.nodes; // eslint-disable-line no-unused-vars
+    // TODO: remove node childrens
 
     return {
         ...state,
+        activeNodeId: '',
         nodes: {
             ...nodes,
             [parentId]: {

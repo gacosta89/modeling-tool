@@ -11,6 +11,7 @@ import DrawingArea from 'shared/model/view/drawingArea';
 import RenderingArea from 'shared/model/view/renderingArea';
 import ToolBar from 'shared/model/view/toolbar';
 import Description from 'shared/model/view/description';
+import RightPanel from 'shared/model/view/rightPanel';
 
 const PaperContainer = styled(Paper)`
     display: flex;
@@ -23,6 +24,12 @@ const Editor = styled.div`
     display: flex;
     flex: 1;
     flexDirection: column;
+`;
+
+const Wrapper = styled.div`
+    flex: 1;
+    display: flex;
+    align-items: stretch;
 `;
 
 @connect(
@@ -39,17 +46,20 @@ class EditorContainer extends Component {
 
     render () {
         return (
-            <Editor>
-                <ToolBar />
-                <PaperContainer>
-                    <DrawingArea />
-                    <RenderingArea
-                        ref={ renderingArea => { this.renderingArea = renderingArea; }}
-                        id="root"
-                    />
-                </PaperContainer>
-                <Description name="Super osiloscope"/>
-            </Editor>
+            <Wrapper>
+                <Editor>
+                    <ToolBar />
+                    <PaperContainer>
+                        <DrawingArea />
+                        <RenderingArea
+                            ref={ renderingArea => { this.renderingArea = renderingArea; }}
+                            id="root"
+                        />
+                    </PaperContainer>
+                    <Description />
+                </Editor>
+                <RightPanel />
+            </Wrapper>
         );
     }
 }
