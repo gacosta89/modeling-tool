@@ -1,4 +1,5 @@
 import { createDuck } from 'redux-duck';
+import { decorateUndoPre, decorateUndoPost } from 'shared/undo/reducer';
 
 import {
     EMPTY_NODE,
@@ -24,7 +25,10 @@ import {
     setNodeField,
     setRootRelHandler,
     setBackgroundPicHandler,
-    setToolHandler } from 'shared/model/reducer/handlers';
+    setToolHandler,
+    eraseHandler } from 'shared/model/reducer/handlers';
+
+import { ERASE } from 'shared/undo/reducer';
 
 /*
 Description: namespace (redux-duck) utility.
@@ -109,10 +113,10 @@ Rationale: actions are immutable messages that describe a user action/event/inte
 */
 
 export const TAP_NODE = namespace.defineType('tap_node');
-export const tapNode = namespace.createAction(TAP_NODE);
+export const tapNode = decorateUndoPre(namespace.createAction(TAP_NODE));
 
 export const DRAW_NODE = namespace.defineType('draw_node');
-export const drawNode = namespace.createAction(DRAW_NODE);
+export const drawNode = decorateUndoPost(namespace.createAction(DRAW_NODE));
 
 export const SET_ROOT_REL = namespace.defineType('set_root_rel');
 export const setRootRel = namespace.createAction(SET_ROOT_REL);
@@ -121,7 +125,7 @@ export const SET_BACKGROUND_PIC = namespace.defineType('set_background_pic');
 export const setBackgroundPic = namespace.createAction(SET_BACKGROUND_PIC);
 
 export const SET_BACKGROUND_PIC_SRC = namespace.defineType('set_background_pic_src');
-export const setBackgroundPicSrc = namespace.createAction(SET_BACKGROUND_PIC_SRC);
+export const setBackgroundPicSrc = decorateUndoPost(namespace.createAction(SET_BACKGROUND_PIC_SRC));
 
 export const SET_TOOL = namespace.defineType('set_tool');
 export const setTool = namespace.createAction(SET_TOOL);
@@ -198,6 +202,7 @@ const modelReducer = namespace.createReducer({
     [SET_BACKGROUND_PIC_SRC]: setBackgroundPicHandler,
     [SET_TOOL]: setToolHandler,
     [SET_FIELD]: setNodeField,
+    [ERASE]: eraseHandler(iniState),
 }, iniState);
 
 export default modelReducer;

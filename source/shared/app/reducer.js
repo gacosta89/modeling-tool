@@ -1,6 +1,8 @@
 import { combineReducers } from 'redux';
 import { routerReducer } from 'react-router-redux';
 
+import undoReducerFactory from 'shared/undo/reducer';
+
 import modelReducer from 'shared/model/reducer';
 
 /*
@@ -12,7 +14,7 @@ Rationale: compose reducers from different domains to create the rootReducer
   The output is a root reducer pure function that will be used by the store.
 */
 
-export default combineReducers({
+export default undoReducerFactory(['model'])(combineReducers({
     routing: routerReducer,
     model: modelReducer,
-});
+}));

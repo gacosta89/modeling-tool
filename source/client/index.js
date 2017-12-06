@@ -13,6 +13,8 @@ import App from 'shared/app/main';
 import rootReducer from 'shared/app/reducer';
 import rootSaga from 'shared/app/rootSaga';
 
+import undoMiddleware from 'shared/undo/middleware';
+
 import 'normalize.css/normalize.css';
 
 const iniState = window.BOOTSTRAP_CLIENT_STATE || null;
@@ -24,7 +26,7 @@ if (process.env.NODE_ENV === 'production') { // production mode: without hot rel
     const store = createStore(
         rootReducer,
         iniState,
-        applyMiddleware(routerMW, sagaMiddleware)
+        applyMiddleware(routerMW, sagaMiddleware, undoMiddleware)
     );
     sagaMiddleware.run(rootSaga);
     const history = syncHistoryWithStore(browserHistory, store);
@@ -38,7 +40,7 @@ if (process.env.NODE_ENV === 'production') { // production mode: without hot rel
     const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose; // eslint-disable-line no-underscore-dangle
     const store = createStore(
         rootReducer,
-        composeEnhancers(applyMiddleware(routerMW, sagaMiddleware))
+        composeEnhancers(applyMiddleware(routerMW, sagaMiddleware, undoMiddleware))
     );
     sagaMiddleware.run(rootSaga);
     const history = syncHistoryWithStore(browserHistory, store);

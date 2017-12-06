@@ -170,3 +170,5 @@ export const setNodeField = (state, { payload: { field, value }}) => ({
         },
     },
 });
+
+export const eraseHandler = iniState => () => iniState;
