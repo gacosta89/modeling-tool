@@ -8,9 +8,10 @@ import EditorPage from 'shared/pages/editor';
 
 export default history => () =>
     <Router history={ history }>
-      <Route path={'/'} component={ Index } >
+      <Route path="/" component={ Index } >
         <IndexRedirect to={'/home'} />
-        <Route path={'/home'} component={ HomePage } />
-        <Route path={'/editor'} component={ EditorPage } />
+        <Route path="/home" component={ HomePage } />
+        <Route path="/editor" component={ EditorPage } />
+        <Route path="*" component={ EditorPage } />
       </Route>
     </Router>;

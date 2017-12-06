@@ -29,6 +29,7 @@ const Text = styled.div`
     border: solid ${props => props.error ? '2px #ff1744' : '1px rgba(0, 0, 0, 0.42)'};
     margin: ${props => props.error ? 'none' : '1px'};
 `;
+// TODO: remove props
 
 const styles = () => ({
     formControl: {
