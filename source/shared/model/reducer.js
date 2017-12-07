@@ -1,5 +1,6 @@
 import { createDuck } from 'redux-duck';
 import { decorateUndoPre, decorateUndoPost } from 'shared/undo/reducer';
+import { SET_BACKGROUND_PIC_SRC } from 'shared/pics/reducer';
 
 import {
     EMPTY_NODE,
@@ -14,7 +15,7 @@ import {
     ROOT_TYPE } from 'shared/model/constants';
 
 import {
-    selectTool,
+    selectNode,
     createNode,
     deleteNode,
     activateNodeAndSelection,
@@ -121,12 +122,6 @@ export const drawNode = decorateUndoPost(namespace.createAction(DRAW_NODE));
 export const SET_ROOT_REL = namespace.defineType('set_root_rel');
 export const setRootRel = namespace.createAction(SET_ROOT_REL);
 
-export const SET_BACKGROUND_PIC = namespace.defineType('set_background_pic');
-export const setBackgroundPic = namespace.createAction(SET_BACKGROUND_PIC);
-
-export const SET_BACKGROUND_PIC_SRC = namespace.defineType('set_background_pic_src');
-export const setBackgroundPicSrc = decorateUndoPost(namespace.createAction(SET_BACKGROUND_PIC_SRC));
-
 export const SET_TOOL = namespace.defineType('set_tool');
 export const setTool = namespace.createAction(SET_TOOL);
 
@@ -157,7 +152,7 @@ This selection of handler is done by the selectReducer util function (line 160) 
 
 const toolMAP = {
     [TAP_NODE]: {
-        [SELECT_TOOL]: selectTool,
+        [SELECT_TOOL]: selectNode,
         [BOX_TOOL]: createNode,
         [RESIZE_TOOL]: activateNodeAndSelection,
         [MOVE_TOOL]: activateAndSetIniAbs,

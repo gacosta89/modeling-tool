@@ -40,7 +40,7 @@ const ToolBarContainer = ({ onErase }) =>
 
 const colors = ['red', 'green', 'blue', 'orange'];
 const getColor = level => colors[level % 4];
-const getPadding = level => `${level * 5}px`;
+const getPadding = level => `${(level - 1) * 5}px`;
 
 const NodeBoxContainer = styled.div`
     margin-left: ${props => getPadding(props.level)}

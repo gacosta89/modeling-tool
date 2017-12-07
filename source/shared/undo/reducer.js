@@ -2,6 +2,7 @@ import { createDuck } from 'redux-duck';
 
 const namespace = createDuck('undo');
 
+
 export const UNDOREDO = namespace.defineType('UNDOREDO');
 
 export const UNDO = namespace.defineType('UNDO');
@@ -63,24 +64,23 @@ export const historyReducer = namespace.createReducer({
     },
 }, iniState);
 
-const undoReducerFactory = namespaces =>
-      nextReducer =>
-        (state, action) => {
-            const { type } = action;
+const undoReducerFactory = nextReducer =>
+    (state, action) => {
+        const { type } = action;
 
-            if ([UNDO, REDO].includes(type)) {
-                const { payload: { nextState }} = action;
-                if (nextState) {
-                    return namespaces.reduce((newState, key) => ({
-                        ...newState,
-                        [key]: nextState[key],
-                    }), state);
-                }
-
-                return state;
-            } else {
-                return nextReducer(state, action);
+        if ([UNDO, REDO].includes(type)) {
+            const { payload: { nextState }} = action;
+            if (nextState) {
+                return {
+                    ...state,
+                    ...nextState,
+                };
             }
-        };
+
+            return state;
+        } else {
+            return nextReducer(state, action);
+        }
+    };
 
 export default undoReducerFactory;

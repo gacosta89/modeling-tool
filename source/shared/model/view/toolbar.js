@@ -2,7 +2,8 @@ import React from 'react';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
 
-import { setBackgroundPic, setTool } from 'shared/model/reducer';
+import { setBackgroundPic } from 'shared/pics/reducer';
+import { setTool } from 'shared/model/reducer';
 import { undo, redo, erase } from 'shared/undo/reducer';
 
 import Button from 'material-ui/Button';

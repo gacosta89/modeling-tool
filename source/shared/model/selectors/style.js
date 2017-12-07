@@ -3,6 +3,8 @@ import { createSelector } from 'reselect';
 import { getNode } from 'shared/model/selectors';
 import { ROOT_TYPE, BACKGROUND_TYPE } from 'shared/model/constants';
 
+import { getImageSrc } from 'shared/pics/selectors';
+
 /*
 Selectors: (reselect) abstraction layer between the data model and the presentational layer.
 
@@ -39,14 +41,24 @@ export const getBoxStyle = createSelector(
 
 export const getActiveBoxStyle = state => getBoxStyle(state, state.model.activeNodeId);
 
+const getNodeBackgroundId = createSelector(
+    getNode,
+    node => node.backgroundImgId,
+);
+
+const getNodeBackgroundSrc = (state, id) =>
+      getImageSrc(state, getNodeBackgroundId(state, id));
+
+
 const getNodeStyle = createSelector( // generates the style out of a node
     getNode,
     getBoxStyle,
-    (node, style) => Object.assign({
+    getNodeBackgroundSrc,
+    (node, style, src) => Object.assign({
         display: node.show ? 'inline' : 'none',
         ...style,
-    }, node.backgroundImgSrc && {
-        backgroundImage: `url(${node.backgroundImgSrc})`,
+    }, node.backgroundImgId && {
+        backgroundImage: `url(${src})`,
         backgroundSize: 'cover',
         backgroundPosition: 'top left',
     })

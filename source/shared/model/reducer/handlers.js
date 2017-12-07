@@ -43,8 +43,8 @@ export const createNode = (state, {
     },
 });
 
-export const selectTool = (state, { payload: { parentId }}) =>
-    ({ ...state, activeN2454odeId: parentId });
+export const selectNode = (state, { payload: { parentId }}) =>
+    ({ ...state, activeNodeId: parentId });
 
 export const deleteNode = (state, { payload: { parentId: nodeId }}) => {
     if (nodeId === 'root') {
@@ -146,13 +146,13 @@ export const setRootRelHandler = (state, { payload: { absX, absY }}) => ({
     },
 });
 
-export const setBackgroundPicHandler = (state, { payload: { src }}) => ({
+export const setBackgroundPicHandler = (state, { payload: { id }}) => ({
     ...state,
     nodes: {
         ...state.nodes,
         [state.activeNodeId]: {
             ...state.nodes[state.activeNodeId],
-            backgroundImgSrc: src,
+            backgroundImgId: id,
         },
     },
 });

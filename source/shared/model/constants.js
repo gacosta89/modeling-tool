@@ -22,7 +22,7 @@ export const EMPTY_NODE = {
     absY: 0,
     width: 0,
     height: 0,
-    backgroundImgSrc: '',
+    backgroundImgId: '',
     type: BOX_TYPE,
     show: false,
     name: '',

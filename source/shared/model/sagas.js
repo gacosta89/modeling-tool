@@ -1,6 +1,23 @@
-import { call, put, takeLatest } from 'redux-saga/effects';
+import {
+    call,
+    put,
+    takeLatest,
+    select,
+    all,
+    fork,
+    takeEvery } from 'redux-saga/effects';
 
-import { setBackgroundPicSrc, SET_BACKGROUND_PIC } from 'shared/model/reducer';
+import { generate } from 'shortid';
+
+import { putStorage, getStorage } from 'shared/app/utils';
+
+import {
+    setBackgroundPicSrc,
+    setPics,
+    SET_BACKGROUND_PIC,
+    SET_BACKGROUND_PIC_SRC } from 'shared/pics/reducer';
+
+import { getAllPics } from 'shared/pics/selectors';
 
 const readFile = file => new Promise(res => {
     const reader = new FileReader();
@@ -29,7 +46,27 @@ Rationale: Observe async actions and fork async task that can potentially dispac
 const loadFile = function* ({ payload: { file }}) {
     try {
         const src = yield call(readFile, file);
-        yield put(setBackgroundPicSrc({ src }));
+        const id = yield call(generate);
+        yield put(setBackgroundPicSrc({ src, id }));
+
+    } catch (e) {
+        console.error(e.message);
+    }
+};
+
+const persistPics = function* () {
+    try {
+        const pics = yield select(getAllPics);
+        yield call(putStorage, 'pics', JSON.stringify(pics));
+    } catch (e) {
+        console.error(e.message);
+    }
+};
+
+const readPics = function* () {
+    try {
+        const allPics = yield call(getStorage, 'pics');
+        yield put(setPics({ allPics: JSON.parse(allPics) }));
     } catch (e) {
         console.error(e.message);
     }
@@ -39,4 +76,16 @@ const watchSetBackground = function* () {
     yield takeLatest(SET_BACKGROUND_PIC, loadFile);
 };
 
-export default watchSetBackground;
+const watchPersistPics = function* () {
+    yield takeEvery(SET_BACKGROUND_PIC_SRC, persistPics);
+};
+
+const rootSaga = function* () {
+    yield all([
+        yield fork(watchSetBackground),
+        yield fork(watchPersistPics),
+        yield fork(readPics),
+    ]);
+};
+
+export default rootSaga;
