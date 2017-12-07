@@ -2,7 +2,8 @@ import React from 'react';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
 
-import { getNodeIds, getNodeName, getNodeLevel } from 'shared/model/selectors';
+import { activateNode, toggleHoverNode } from 'shared/model/reducer';
+import { getNodeIds, getNodeName, getNodeLevel, getColor } from 'shared/model/selectors';
 
 import Paper from 'material-ui/Paper';
 import Button from 'material-ui/Button';
@@ -38,8 +39,6 @@ const ToolBarContainer = ({ onErase }) =>
         </Button>
     </ToolBar>;
 
-const colors = ['red', 'green', 'blue', 'orange'];
-const getColor = level => colors[level % 4];
 const getPadding = level => `${(level - 1) * 5}px`;
 
 const NodeBoxContainer = styled.div`
@@ -49,8 +48,8 @@ const NodeBoxContainer = styled.div`
     display: flex;
     align-items: stretch;
     padding: 5px;
-    border: solid 1px ${props => getColor(props.level)};
-    color: ${props => getColor(props.level)};
+    border: solid 1px ${props => props.color};
+    color: ${props => props.color};
     min-height: 18px;
     &:before {
         content: "";
@@ -58,7 +57,7 @@ const NodeBoxContainer = styled.div`
         height: 18;
         width: 10px;
         margin-right: 5px;
-        background-color: ${props => getColor(props.level)}
+        background-color: ${props => props.color}
     }
 `;
 
@@ -66,10 +65,22 @@ const NodeBox = connect(
     (state, ownProps) => ({
         nodeName: getNodeName(state, ownProps.id),
         nodeLevel: getNodeLevel(state, ownProps.id),
+        color: getColor(state, ownProps.id),
+    }),
+    (dispatch, ownProps) => ({
+        onClick: () => dispatch(activateNode({ parentId: ownProps.id })),
+        onEnter: () => dispatch(toggleHoverNode({ parentId: ownProps.id })),
+        onLeave: () => dispatch(toggleHoverNode({ parentId: ownProps.id })),
     })
 )(
-    ({ nodeName, nodeLevel }) =>
-        <NodeBoxContainer level={nodeLevel}>
+    ({ nodeName, nodeLevel, color, onClick, onEnter, onLeave }) =>
+        <NodeBoxContainer
+            level={nodeLevel}
+            color={color}
+            onClick={onClick}
+            onMouseEnter={onEnter}
+            onMouseLeave={onLeave}
+        >
             {nodeName}
         </NodeBoxContainer>
 );

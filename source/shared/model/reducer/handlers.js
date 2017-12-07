@@ -1,6 +1,8 @@
 import { EMPTY_NODE } from 'shared/model/constants';
 
-import { fixAbsCoordinates } from 'shared/model/utils';
+import {
+    fixAbsCoordinates,
+    removeChildrensAndParent } from 'shared/model/utils';
 
 /*
 Description: createNode (handler / reducer)
@@ -46,22 +48,21 @@ export const createNode = (state, {
 export const selectNode = (state, { payload: { parentId }}) =>
     ({ ...state, activeNodeId: parentId });
 
+
 export const deleteNode = (state, { payload: { parentId: nodeId }}) => {
     if (nodeId === 'root') {
         return state;
     }
     const parentId = state.nodes[nodeId].parentId;
-    const { [nodeId]: remove, ...nodes } = state.nodes; // eslint-disable-line no-unused-vars
-    // TODO: remove node childrens
 
     return {
         ...state,
         activeNodeId: '',
         nodes: {
-            ...nodes,
+            ...removeChildrensAndParent(state.nodes, nodeId),
             [parentId]: {
-                ...nodes[parentId],
-                childrenIds: nodes[parentId].childrenIds.filter(id => id !== nodeId),
+                ...state.nodes[parentId],
+                childrenIds: state.nodes[parentId].childrenIds.filter(id => id !== nodeId),
             },
         },
     };
@@ -182,4 +183,9 @@ export const eraseHandler = iniState => state => ({
             absY: state.nodes.root.absY,
         },
     },
+});
+
+export const toggleHover = (state, { payload: { parentId }}) => ({
+    ...state,
+    hoveredNodeId: state.hoveredNodeId === parentId ? '' : parentId,
 });

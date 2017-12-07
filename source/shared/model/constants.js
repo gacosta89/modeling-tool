@@ -40,3 +40,14 @@ export const SELECT_TOOL = 'select';
 export const RESIZE_TOOL = 'resize';
 export const MOVE_TOOL = 'move';
 export const DELETE_TOOL = 'delete';
+
+// colors
+
+export const COLORS = [
+    op => `rgba(0, 128, 0, ${op})`,
+    op => `rgba(0, 0, 255, ${op})`,
+    op => `rgba(255, 165, 0, ${op})`,
+    op => `rgba(255, 0, 0, ${op})`,
+    op => `rgba(156, 39, 176, ${op})`,
+    op => `rgba(0, 188, 212, ${op})`,
+];

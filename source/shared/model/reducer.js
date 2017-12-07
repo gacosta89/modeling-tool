@@ -27,7 +27,8 @@ import {
     setRootRelHandler,
     setBackgroundPicHandler,
     setToolHandler,
-    eraseHandler } from 'shared/model/reducer/handlers';
+    eraseHandler,
+    toggleHover } from 'shared/model/reducer/handlers';
 
 import { ERASE } from 'shared/undo/reducer';
 
@@ -53,7 +54,7 @@ const iniState = {
             ...DEFAULT_TYPE_OBJ,
             type: BOX_TYPE,
             style: {
-                borderWidth: 1,
+                borderWidth: 0,
             },
         },
         [ROOT_TYPE]: {
@@ -89,6 +90,7 @@ const iniState = {
         }
     },
     activeNodeId: 'root',
+    hoveredNodeId: '',
     selectionActive: false,
     activeTool: BOX_TOOL,
     iniTap: {
@@ -127,6 +129,12 @@ export const setTool = namespace.createAction(SET_TOOL);
 
 export const SET_FIELD = namespace.defineType('set_field');
 export const setField = namespace.createAction(SET_FIELD);
+
+export const ACTIVATE_NODE = namespace.defineType('ACTIVATE_NODE');
+export const activateNode = namespace.createAction(ACTIVATE_NODE);
+
+export const TOGGLE_HOVER_NODE = namespace.defineType('TOGGLE_HOVER_NODE');
+export const toggleHoverNode = namespace.createAction(TOGGLE_HOVER_NODE);
 
 /*
 Description: toolMAP "smart" reducer structure.
@@ -198,6 +206,8 @@ const modelReducer = namespace.createReducer({
     [SET_TOOL]: setToolHandler,
     [SET_FIELD]: setNodeField,
     [ERASE]: eraseHandler(iniState),
+    [ACTIVATE_NODE]: selectNode,
+    [TOGGLE_HOVER_NODE]: toggleHover,
 }, iniState);
 
 export default modelReducer;

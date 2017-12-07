@@ -1,7 +1,11 @@
 import { createSelector } from 'reselect';
 
-import { getNode } from 'shared/model/selectors';
-import { ROOT_TYPE, BACKGROUND_TYPE } from 'shared/model/constants';
+import {
+    getNode,
+    getActiveNodeId,
+    getNodeLevel,
+    getHoveredNodeId } from 'shared/model/selectors';
+import { ROOT_TYPE, BACKGROUND_TYPE, COLORS } from 'shared/model/constants';
 
 import { getImageSrc } from 'shared/pics/selectors';
 
@@ -33,10 +37,29 @@ const getDimentions = createSelector( // generates node dimensions
     }
 );
 
+const getOpacity = createSelector(
+    getNode,
+    getActiveNodeId,
+    getHoveredNodeId,
+    (node, activeNodeId, hoveredId) => node.id === activeNodeId ? 0.8 :
+        node.id === hoveredId ? 0.6 : 0.4
+);
+
+export const getColor = createSelector(
+    getOpacity,
+    getNodeLevel,
+    (opacity, level) => COLORS[level % 5](opacity),
+);
+
 export const getBoxStyle = createSelector(
     getNode,
+    getColor,
     state => state.model.boxTypes,
-    (node, types) => types[node.type].style,
+    (node, color, types) => node.type === ROOT_TYPE ?
+        types[node.type].style : {
+            ...types[node.type].style,
+            backgroundColor: color,
+        }
 );
 
 export const getActiveBoxStyle = state => getBoxStyle(state, state.model.activeNodeId);

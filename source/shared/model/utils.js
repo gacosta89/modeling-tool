@@ -18,3 +18,12 @@ export const getFamily = (nodes, partial = [], ids = []) => {
 
 export const fixAbsCoordinates = (ids, deltaX, deltaY, nodes) =>
       updateAbsCoordinates(getFamily(nodes, ids, ids), deltaX, deltaY, nodes);
+
+export const removeNodes = (nodes, ids) => ids.reduce(
+    (newNodes, id) => {
+        const {[id]: remove, ...rest} = newNodes; // eslint-disable-line
+        return rest;
+    }, nodes);
+
+export const removeChildrensAndParent = (nodes, parentId) =>
+    removeNodes(nodes, getFamily(nodes, [parentId], [parentId]));

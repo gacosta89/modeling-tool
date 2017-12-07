@@ -9,8 +9,6 @@ import { getChildrens, getStyle } from 'shared/model/selectors';
 
 const Box = styled.div`
     position: absolute;
-    border: solid 1px black;
-
 `;
 
 /*
@@ -25,20 +23,20 @@ Rationale: with react is supper easy to render a complex nested structure out of
 
 const ParentFactory = connect(
     (state, ownProps) => ({
-        ids: getChildrens(state, ownProps.id), // childrens of the parentNode to recursively render the structure
-        style: getStyle(state, ownProps.id), // compute the style of the node
+        ids: getChildrens(state, ownProps.id),
+        style: getStyle(state, ownProps.id),
     }),
     (dispatch, ownProps) => ({
         handler: e => {
-            e.stopPropagation();  // stop the propagation to prevent the creation of nodes in parents other than the inmediate
+            e.stopPropagation();
             if (e.button === 2) { // dont create the node if mouse down was with secondary button
                 return;
             } else {
-                dispatch(tapNode({ // create a new node with absX and absY as left top coordinates
+                dispatch(tapNode({
                     absX: e.pageX,
                     absY: e.pageY,
                     id: generate(),
-                    parentId: ownProps.id, // link the new child to the parent
+                    parentId: ownProps.id,
                 }));
             }
         },

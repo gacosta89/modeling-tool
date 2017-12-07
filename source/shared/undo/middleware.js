@@ -26,11 +26,13 @@ const undoMiddlewareFactory = namespaces => {
         const iniState = getStorage('history');
         let undoState = historyReducer(iniState, { type: '@@INIT' });
         store.dispatch(redo({ nextState: getCurrentState(undoState) }));
+        console.log(JSON.stringify(undoState, null, 2));
 
         return next => action => {
             if ([UNDO, REDO].includes(action.type)) {
                 undoState = historyReducer(undoState, action);
                 putStorage('history', undoState);
+                console.log(JSON.stringify(undoState, null, 2));
 
                 return next({
                     ...action,
@@ -48,6 +50,7 @@ const undoMiddlewareFactory = namespaces => {
                     nextState,
                     isPost: isPost(action),
                 }));
+                console.log(JSON.stringify(undoState, null, 2));
 
                 putStorage('history', undoState);
                 return nextAction;
