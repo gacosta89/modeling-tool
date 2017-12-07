@@ -195,3 +195,8 @@ export const toggleHover = (state, {
     hoveredNodeId: leave ? (state.hoveredNodeId === nodeId ? '' : nodeId) :
         (enter ? nodeId : state.nodes[nodeId].parentId),
 });
+
+export const togglePreviewHandler = state => ({
+    ...state,
+    preview: !state.preview,
+});

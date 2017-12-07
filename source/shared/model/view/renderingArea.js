@@ -9,6 +9,7 @@ import { getChildrens, getStyle } from 'shared/model/selectors';
 
 const Box = styled.div`
     position: absolute;
+    transition: background-color 0.5s ease;
 `;
 
 /*

@@ -1,4 +1,4 @@
-export default ({ title, rootMarkup, initialState }) => {
+export default ({ title, rootMarkup }) => {
     return `
     <!doctype html>
     <html>
@@ -50,9 +50,6 @@ export default ({ title, rootMarkup, initialState }) => {
       </head>
       <body>
         <div id='root'>${ rootMarkup }</div>
-        <script>
-          window.BOOTSTRAP_CLIENT_STATE = ${JSON.stringify(initialState)}
-        </script>
         <script src="/static/index.js"></script>
       </body>
     </html>

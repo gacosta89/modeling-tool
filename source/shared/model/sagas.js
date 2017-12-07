@@ -66,7 +66,7 @@ const persistPics = function* () {
 const readPics = function* () {
     try {
         const allPics = yield call(getStorage, 'pics');
-        yield put(setPics({ allPics: JSON.parse(allPics) }));
+        yield put(setPics({ allPics: allPics ? JSON.parse(allPics) : {}}));
     } catch (e) {
         console.error(e.message);
     }

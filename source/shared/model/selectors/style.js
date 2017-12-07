@@ -4,7 +4,8 @@ import {
     getNode,
     getActiveNodeId,
     getNodeLevel,
-    getHoveredNodeId } from 'shared/model/selectors';
+    getHoveredNodeId,
+    getPreview } from 'shared/model/selectors/common';
 import { ROOT_TYPE, BACKGROUND_TYPE, COLORS } from 'shared/model/constants';
 
 import { getImageSrc } from 'shared/pics/selectors';
@@ -41,8 +42,11 @@ const getOpacity = createSelector(
     getNode,
     getActiveNodeId,
     getHoveredNodeId,
-    (node, activeNodeId, hoveredId) => node.id === activeNodeId ? 0.8 :
-        node.id === hoveredId ? 0.6 : 0.4
+    (node, activeNodeId, hoveredId) => {
+        if (node.id === activeNodeId) return 0.9;
+        if (node.id === hoveredId) return 0.8;
+        return 0.4;
+    }
 );
 
 export const getColor = createSelector(
@@ -51,14 +55,27 @@ export const getColor = createSelector(
     (opacity, level) => COLORS[level % 6](opacity),
 );
 
+const getRenderingAreaOpacity = createSelector(
+    getNode,
+    getActiveNodeId,
+    getHoveredNodeId,
+    getPreview,
+    (node, activeNodeId, hoveredId, preview) => {
+        if (node.id === activeNodeId) return 0.9;
+        if (node.id === hoveredId) return 0.8;
+        if (preview) return 0;
+        return 0.4;
+    }
+);
+
 export const getBoxStyle = createSelector(
     getNode,
-    getColor,
+    getRenderingAreaOpacity,
     state => state.model.boxTypes,
-    (node, color, types) => node.type === ROOT_TYPE ?
+    (node, opacity, types) => node.type === ROOT_TYPE ?
         types[node.type].style : {
             ...types[node.type].style,
-            backgroundColor: color,
+            backgroundColor: COLORS[node.level % 6](opacity),
         }
 );
 

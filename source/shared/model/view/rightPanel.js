@@ -2,13 +2,16 @@ import React from 'react';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
 
-import { activateNode, toggleHoverNode } from 'shared/model/reducer';
+import { activateNode, toggleHoverNode, togglePreview } from 'shared/model/reducer';
 import {
+    getPreview,
     getNodeIdsByLevel,
     getNodeName,
     getNodeLevel,
     getColor } from 'shared/model/selectors';
 
+import { FormControlLabel } from 'material-ui/Form';
+import Switch from 'material-ui/Switch';
 import Paper from 'material-ui/Paper';
 import Button from 'material-ui/Button';
 
@@ -33,7 +36,7 @@ const ToolBarContainer = ({ onErase }) =>
             raised
             onClick={onErase}
         >
-            INTERACTIVE
+            SLAVE
         </Button>
         <Button
             raised
@@ -89,10 +92,14 @@ const NodeBox = connect(
         </NodeBoxContainer>
 );
 
-const RightPanelContainer = ({ nodes }) =>
+const RightPanelContainer = ({ nodes, preview, onToggle }) =>
       <div style={{ display: 'flex', flexDirection: 'column' }}>
         <ToolBarContainer />
         <RightPanel>
+            <FormControlLabel
+                control={<Switch checked={preview} />}
+                label="Preview" onChange={onToggle}
+            />
             {
                 nodes.map(nodeId => <NodeBox key={nodeId} id={nodeId} />)
             }
@@ -101,6 +108,11 @@ const RightPanelContainer = ({ nodes }) =>
 
 const mapStateToProps = state => ({
     nodes: getNodeIdsByLevel(state),
+    preview: getPreview(state),
 });
 
-export default connect(mapStateToProps)(RightPanelContainer);
+const mapDispatchToProps = dispatch => ({
+    onToggle: () => dispatch(togglePreview())
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(RightPanelContainer);

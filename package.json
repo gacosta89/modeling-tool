@@ -11,11 +11,8 @@
     "build:client": "webpack --config webpack.config.prod.js --bail",
     "build:dev": "webpack --config webpack.config.dev.js --bail",
     "build:server": "webpack --config webpack.config.server.js --bail",
-    "deploy": "babel-node scripts/docker.js --build modeling-tool",
-    "start": "babel-node scripts/docker.js --start modeling-tool",
-    "stop": "babel-node scripts/docker.js --stop modeling-tool",
+    "start": "cross-env NODE_PATH=build node build/server/index.js",
     "test:e2e": "babel-node scripts/e2e.js",
-    "all": "npm run lint && npm run test && npm run build && babel-node scripts/docker.js --stop --clean modeling-tool && babel-node scripts/docker.js --build --start modeling-tool && npm run test:e2e",
     "dev": "cross-env NODE_PATH=source babel-node devServer.js",
     "watch": "watch \"clear && npm run lint -s && npm run test -s\" source"
   },

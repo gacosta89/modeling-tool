@@ -3,7 +3,9 @@ import { connect } from 'react-redux';
 import styled from 'styled-components';
 
 import { setField } from 'shared/model/reducer';
-import { getActiveNodeField } from 'shared/model/selectors';
+import {
+    getActiveNodeField,
+    getPreview } from 'shared/model/selectors';
 
 import { NODE_NAME, NODE_DESCRIPTION } from 'shared/model/constants';
 
@@ -51,7 +53,13 @@ const styles = () => ({
     },
 });
 
-const DescriptionContainer = ({ name, description, onChangeField, classes }) =>
+const DescriptionContainer = ({
+    name,
+    description,
+    onChangeField,
+    disabled,
+    classes
+}) =>
     <Description>
         <FormControl className={classes.formControl}>
             <InputLabel htmlFor="title">Name</InputLabel>
@@ -60,6 +68,7 @@ const DescriptionContainer = ({ name, description, onChangeField, classes }) =>
                 id="title"
                 onChange={onChangeField(NODE_NAME)}
                 value={name}
+                disabled={disabled}
             />
         </FormControl>
         <FormControl className={classes.textareaContainer}>
@@ -79,14 +88,25 @@ const DescriptionContainer = ({ name, description, onChangeField, classes }) =>
 const mapStateToProps = state => ({
     name: getActiveNodeField(state, NODE_NAME),
     description: getActiveNodeField(state, NODE_DESCRIPTION),
+    preview: getPreview(state),
 });
 
 const mapDispatchToProps = dispatch => ({
     onChangeField: field => e => dispatch(setField({ field, value: e.target.value })),
 });
 
+const noop = () => () => {};
+
+const mergeProps = (stateProps, dispatchProps, ownProps) => ({
+    ...ownProps,
+    disabled: stateProps.preview,
+    name: stateProps.name,
+    description: stateProps.description,
+    onChangeField: stateProps.preview ? noop : dispatchProps.onChangeField,
+});
+
 export default withStyles(styles)(
-    connect(mapStateToProps, mapDispatchToProps)(
+    connect(mapStateToProps, mapDispatchToProps, mergeProps)(
         DescriptionContainer
     )
 );

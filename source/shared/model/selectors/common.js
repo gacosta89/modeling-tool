@@ -15,6 +15,9 @@ export const getHoveredNodeId = state =>
 export const getActiveNode = state =>
     getNode(state, getActiveNodeId(state));
 
+export const getHoveredNode = state =>
+    getNode(state, getHoveredNodeId(state));
+
 export const getSelectionActive = state =>
     state.model.selectionActive;
 
@@ -36,6 +39,7 @@ export const getChildrens = (state, id) =>
 export const getIniTap = state => state.model.iniTap;
 
 export const getActiveNodeField = (state, field) =>
+    state.model.preview ? getHoveredNode(state)[field] || '' :
     getActiveNode(state)[field] || '';
 
 export const getNodeIds = createSelector(
@@ -53,3 +57,5 @@ const getNodeField = field => (state, id) =>
 
 export const getNodeName = getNodeField('name');
 export const getNodeLevel = getNodeField('level');
+
+export const getPreview = state => state.model.preview;

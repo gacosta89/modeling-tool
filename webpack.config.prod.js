@@ -14,6 +14,7 @@ module.exports = {
         ]
     },
     entry: [
+        'babel-polyfill',
         './client/index'
     ],
     output: {

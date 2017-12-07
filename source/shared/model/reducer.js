@@ -28,7 +28,8 @@ import {
     setBackgroundPicHandler,
     setToolHandler,
     eraseHandler,
-    toggleHover } from 'shared/model/reducer/handlers';
+    toggleHover,
+    togglePreviewHandler } from 'shared/model/reducer/handlers';
 
 import { ERASE } from 'shared/undo/reducer';
 
@@ -93,6 +94,7 @@ const iniState = {
     hoveredNodeId: '',
     selectionActive: false,
     activeTool: BOX_TOOL,
+    preview: false,
     iniTap: {
         absX: 0,
         absY: 0,
@@ -135,6 +137,9 @@ export const activateNode = namespace.createAction(ACTIVATE_NODE);
 
 export const TOGGLE_HOVER_NODE = namespace.defineType('TOGGLE_HOVER_NODE');
 export const toggleHoverNode = namespace.createAction(TOGGLE_HOVER_NODE);
+
+export const TOGGLE_PREVIEW = namespace.defineType('TOGGLE_PREVIEW');
+export const togglePreview = namespace.createAction(TOGGLE_PREVIEW);
 
 /*
 Description: toolMAP "smart" reducer structure.
@@ -208,6 +213,7 @@ const modelReducer = namespace.createReducer({
     [ERASE]: eraseHandler(iniState),
     [ACTIVATE_NODE]: selectNode,
     [TOGGLE_HOVER_NODE]: toggleHover,
+    [TOGGLE_PREVIEW]: togglePreviewHandler,
 }, iniState);
 
 export default modelReducer;
