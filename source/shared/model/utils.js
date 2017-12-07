@@ -27,3 +27,12 @@ export const removeNodes = (nodes, ids) => ids.reduce(
 
 export const removeChildrensAndParent = (nodes, parentId) =>
     removeNodes(nodes, getFamily(nodes, [parentId], [parentId]));
+
+export const getFirstChilds = (nodes, partial = [], h1, ...rest) => {
+    if (!h1) {
+        return partial;
+    }
+    const childrenIds = nodes[h1].childrenIds;
+    const newRest = childrenIds[0] ? [...childrenIds, ...rest] : rest;
+    return getFirstChilds(nodes, [...partial, h1], ...newRest); // tail recursion yay!
+};

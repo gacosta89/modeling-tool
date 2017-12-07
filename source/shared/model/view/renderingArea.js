@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { generate } from 'shortid';
 import styled from 'styled-components';
 
-import { tapNode } from 'shared/model/reducer';
+import { tapNode, toggleHoverNode } from 'shared/model/reducer';
 
 import { getChildrens, getStyle } from 'shared/model/selectors';
 
@@ -40,12 +40,16 @@ const ParentFactory = connect(
                 }));
             }
         },
+        onEnter: () => dispatch(toggleHoverNode({ parentId: ownProps.id, enter: true })),
+        onLeave: () => dispatch(toggleHoverNode({ parentId: ownProps.id, enter: false })),
     })
 )(
-    ({ style, handler, ids }) =>
+    ({ style, handler, onEnter, onLeave, ids }) =>
         <Box
             style={style}
             onMouseDown={handler}
+            onMouseEnter={onEnter}
+            onMouseLeave={onLeave}
         >
             {
                 ids.map(                                     // recursively render child nodes

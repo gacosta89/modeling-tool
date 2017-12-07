@@ -48,7 +48,7 @@ const getOpacity = createSelector(
 export const getColor = createSelector(
     getOpacity,
     getNodeLevel,
-    (opacity, level) => COLORS[level % 5](opacity),
+    (opacity, level) => COLORS[level % 6](opacity),
 );
 
 export const getBoxStyle = createSelector(

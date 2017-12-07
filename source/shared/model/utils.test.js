@@ -1,5 +1,5 @@
 import test from 'tape';
-import { getFamily } from './utils.js';
+import { getFamily, getFirstChilds } from './utils.js';
 
 test('getFamily', assert => {
     assert.plan(1);
@@ -30,4 +30,57 @@ test('getFamily', assert => {
     const actual = getFamily(nodes, ['01'], ['01']);
 
     assert.deepEqual(actual, expected, 'It should return the flat array of children ids.');
+});
+
+test('getFirstChilds', nest => {
+    nest.test('with children', assert => {
+        assert.plan(1);
+
+        const nodes = {
+            'p': {
+                childrenIds: ['h1', 'h2'],
+            },
+            'h2': {
+                childrenIds: ['h2h1', 'h2h2'],
+            },
+            'h1': {
+                childrenIds: ['h1h1', 'h1h2'],
+            },
+            'h2h2h1': {
+                childrenIds: [],
+            },
+            'h1h1': {
+                childrenIds: [],
+            },
+            'h2h1': {
+                childrenIds: [],
+            },
+            'h1h2': {
+                childrenIds: [],
+            },
+            'h2h2': {
+                childrenIds: ['h2h2h1'],
+            },
+        };
+
+        const expected = ['h1', 'h1h1', 'h1h2', 'h2', 'h2h1', 'h2h2', 'h2h2h1'];
+
+        const actual = getFirstChilds(nodes, [], 'h1', 'h2');
+        assert.deepEqual(actual, expected, 'It should return the flat array of children ids ordered by level.');
+    });
+
+    nest.test('without children', assert => {
+        assert.plan(1);
+
+        const nodes = {
+            'p': {
+                childrenIds: [],
+            },
+        };
+
+        const expected = [];
+
+        const actual = getFirstChilds(nodes, [], ...[]);
+        assert.deepEqual(actual, expected, 'It should return the empty array.');
+    });
 });

@@ -185,7 +185,13 @@ export const eraseHandler = iniState => state => ({
     },
 });
 
-export const toggleHover = (state, { payload: { parentId }}) => ({
+export const toggleHover = (state, {
+    payload: {
+        parentId: nodeId,
+        enter,
+        leave = false
+}}) => ({
     ...state,
-    hoveredNodeId: state.hoveredNodeId === parentId ? '' : parentId,
+    hoveredNodeId: leave ? (state.hoveredNodeId === nodeId ? '' : nodeId) :
+        (enter ? nodeId : state.nodes[nodeId].parentId),
 });

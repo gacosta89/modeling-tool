@@ -1,5 +1,7 @@
 import { createSelector } from 'reselect';
 
+import { getFirstChilds } from 'shared/model/utils';
+
 import { EMPTY_NODE } from 'shared/model/constants';
 
 export const getNode = (state, id) => state.model.nodes[id] || EMPTY_NODE;
@@ -39,6 +41,11 @@ export const getActiveNodeField = (state, field) =>
 export const getNodeIds = createSelector(
     state => state.model.nodes,
     nodes => Object.keys(nodes).slice(1),
+);
+
+export const getNodeIdsByLevel = createSelector(
+    state => state.model.nodes,
+    nodes => getFirstChilds(nodes, [], ...nodes.root.childrenIds),
 );
 
 const getNodeField = field => (state, id) =>

@@ -3,7 +3,11 @@ import { connect } from 'react-redux';
 import styled from 'styled-components';
 
 import { activateNode, toggleHoverNode } from 'shared/model/reducer';
-import { getNodeIds, getNodeName, getNodeLevel, getColor } from 'shared/model/selectors';
+import {
+    getNodeIdsByLevel,
+    getNodeName,
+    getNodeLevel,
+    getColor } from 'shared/model/selectors';
 
 import Paper from 'material-ui/Paper';
 import Button from 'material-ui/Button';
@@ -69,8 +73,8 @@ const NodeBox = connect(
     }),
     (dispatch, ownProps) => ({
         onClick: () => dispatch(activateNode({ parentId: ownProps.id })),
-        onEnter: () => dispatch(toggleHoverNode({ parentId: ownProps.id })),
-        onLeave: () => dispatch(toggleHoverNode({ parentId: ownProps.id })),
+        onEnter: () => dispatch(toggleHoverNode({ parentId: ownProps.id, leave: true })),
+        onLeave: () => dispatch(toggleHoverNode({ parentId: ownProps.id, leave: true })),
     })
 )(
     ({ nodeName, nodeLevel, color, onClick, onEnter, onLeave }) =>
@@ -96,7 +100,7 @@ const RightPanelContainer = ({ nodes }) =>
     </div>;
 
 const mapStateToProps = state => ({
-    nodes: getNodeIds(state),
+    nodes: getNodeIdsByLevel(state),
 });
 
 export default connect(mapStateToProps)(RightPanelContainer);
