@@ -4,7 +4,7 @@ import styled from 'styled-components';
 
 import { setField } from 'shared/model/reducer';
 import {
-    getActiveNodeField,
+    getNodeForDescription,
     getPreview } from 'shared/model/selectors';
 
 import {
@@ -90,8 +90,8 @@ const DescriptionContainer = ({
     </Description>;
 
 const mapStateToProps = state => ({
-    name: getActiveNodeField(state, NODE_NAME),
-    description: getActiveNodeField(state, NODE_DESCRIPTION),
+    name: getNodeForDescription(state)[NODE_NAME],
+    description: getNodeForDescription(state)[NODE_DESCRIPTION],
     preview: getPreview(state),
 });
 

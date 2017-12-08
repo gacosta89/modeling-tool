@@ -41,9 +41,18 @@ export const getChildrens = (state, id) =>
 
 export const getIniTap = state => state.model.iniTap;
 
-export const getActiveNodeField = (state, field) =>
-    state.model.preview ? getHoveredNode(state)[field] || '' :
-    getActiveNode(state)[field] || '';
+export const getPreview = state =>
+    getAppMode(state) === INTERACTIVE_MODE ?
+    true : state.model.preview;
+
+export const getNodeForDescription = state => {
+    const hovered = getHoveredNode(state);
+    if (getPreview(state) && hovered !== EMPTY_NODE) {
+        return hovered;
+    } else {
+        return getActiveNode(state);
+    }
+};
 
 export const getNodeIds = createSelector(
     state => state.model.nodes,
@@ -61,9 +70,6 @@ const getNodeField = field => (state, id) =>
 export const getNodeName = getNodeField('name');
 export const getNodeLevel = getNodeField('level');
 
-export const getPreview = state =>
-    getAppMode(state) === INTERACTIVE_MODE ?
-    true : state.model.preview;
 
 export const getUtilizedPicIds = createSelector(
     state => state.model.nodes,

@@ -6,6 +6,7 @@ import { setMode } from 'shared/app/reducer/config';
 import { getAppMode, getPersisted } from 'shared/app/selectors';
 
 import { INTERACTIVE_MODE } from 'shared/app/constants';
+import { SELECT_TOOL } from 'shared/model/constants';
 
 import { createIniData } from 'shared/app/utils';
 
@@ -17,6 +18,7 @@ const persistModeAndState = function* () {
     if (mode === INTERACTIVE_MODE && !persisted) {
         yield put(setMode({ mode }));
         const dataToPersist = yield select(x => x);
+        dataToPersist.model.activeTool = SELECT_TOOL;
         try {
             yield call(createIniData, JSON.stringify(dataToPersist));
         } catch (e) {
