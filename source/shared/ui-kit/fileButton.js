@@ -10,8 +10,12 @@ const FileInput = styled.input`
 
 class FileButtonContainer extends Component {
     onClick = () => {
+        this.setState({
+            value: '',
+        });
         if (this.inputNode) {
             this.inputNode.click();
+            this.inputNode.value = ''; // flush the value of input type file
         }
     }
 
@@ -27,7 +31,8 @@ class FileButtonContainer extends Component {
                 <FileInput
                     type="file"
                     ref={ input => { this.input = input; }}
-                    onChange={onFiles}/>
+                    onChange={onFiles}
+                />
             </Button>
         );
     }
