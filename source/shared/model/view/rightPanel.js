@@ -10,6 +10,10 @@ import {
     getNodeLevel,
     getColor } from 'shared/model/selectors';
 
+import { getIsInteractiveMode } from 'shared/app/selectors';
+
+import { INTERACTIVE_PATH } from 'shared/app/constants';
+
 import { FormControlLabel } from 'material-ui/Form';
 import Switch from 'material-ui/Switch';
 import Paper from 'material-ui/Paper';
@@ -30,17 +34,17 @@ const ToolBar = styled.div`
     justifyContent: flex-end;
 `;
 
-const ToolBarContainer = ({ onErase }) =>
+const ToolBarContainer = () =>
     <ToolBar>
         <Button
             raised
-            onClick={onErase}
         >
-            SLAVE
+            MIRROR
         </Button>
         <Button
             raised
-            onClick={onErase}
+            href={INTERACTIVE_PATH}
+            target="_blank"
         >
             GENERATE
         </Button>
@@ -58,6 +62,7 @@ const NodeBoxContainer = styled.div`
     border: solid 1px ${props => props.color};
     color: ${props => props.color};
     min-height: 18px;
+    cursor: default;
     &:before {
         content: "";
         display: inline-block;
@@ -92,14 +97,21 @@ const NodeBox = connect(
         </NodeBoxContainer>
 );
 
-const RightPanelContainer = ({ nodes, preview, onToggle }) =>
+const RightPanelContainer = ({
+    nodes,
+    interactive,
+    preview,
+    onToggle
+}) =>
       <div style={{ display: 'flex', flexDirection: 'column' }}>
-        <ToolBarContainer />
+        { !interactive && <ToolBarContainer /> }
         <RightPanel>
-            <FormControlLabel
-                control={<Switch checked={preview} />}
-                label="Preview" onChange={onToggle}
-            />
+            { !interactive &&
+                <FormControlLabel
+                    control={<Switch checked={preview} />}
+                    label="Preview" onChange={onToggle}
+                />
+            }
             {
                 nodes.map(nodeId => <NodeBox key={nodeId} id={nodeId} />)
             }
@@ -109,6 +121,7 @@ const RightPanelContainer = ({ nodes, preview, onToggle }) =>
 const mapStateToProps = state => ({
     nodes: getNodeIdsByLevel(state),
     preview: getPreview(state),
+    interactive: getIsInteractiveMode(state),
 });
 
 const mapDispatchToProps = dispatch => ({

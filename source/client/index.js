@@ -1,3 +1,5 @@
+import 'normalize.css/normalize.css';
+
 import React from 'react';
 import ReactDOM from 'react-dom';
 
@@ -11,11 +13,9 @@ import i18n from 'shared/app/i18n';
 import App from 'shared/app/main';
 
 import rootReducer from 'shared/app/reducer';
-import rootSaga from 'shared/app/rootSaga';
+import rootSaga from 'shared/app/sagas';
 
 import undoMiddleware from 'shared/undo/middleware';
-
-import 'normalize.css/normalize.css';
 
 const iniState = window.BOOTSTRAP_CLIENT_STATE || undefined;
 
@@ -68,3 +68,5 @@ if (process.env.NODE_ENV === 'production') { // production mode: without hot rel
         );
     });
 }
+
+

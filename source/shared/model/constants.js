@@ -51,3 +51,7 @@ export const COLORS = [
     op => `rgba(156, 39, 176, ${op})`,
     op => `rgba(0, 188, 212, ${op})`,
 ];
+
+// Node ids
+
+export const NODE_NAME_ID = 'node-name';

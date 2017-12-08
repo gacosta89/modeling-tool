@@ -7,7 +7,10 @@ import {
     getActiveNodeField,
     getPreview } from 'shared/model/selectors';
 
-import { NODE_NAME, NODE_DESCRIPTION } from 'shared/model/constants';
+import {
+    NODE_NAME,
+    NODE_DESCRIPTION,
+    NODE_NAME_ID } from 'shared/model/constants';
 
 import { withStyles } from 'material-ui/styles';
 import { FormControl } from 'material-ui/Form';
@@ -69,6 +72,7 @@ const DescriptionContainer = ({
                 onChange={onChangeField(NODE_NAME)}
                 value={name}
                 disabled={disabled}
+                id={NODE_NAME_ID}
             />
         </FormControl>
         <FormControl className={classes.textareaContainer}>

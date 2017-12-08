@@ -30,6 +30,7 @@ const ParentFactory = connect(
     (dispatch, ownProps) => ({
         handler: e => {
             e.stopPropagation();
+            e.preventDefault();
             if (e.button === 2) { // dont create the node if mouse down was with secondary button
                 return;
             } else {

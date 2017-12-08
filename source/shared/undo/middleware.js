@@ -14,6 +14,7 @@ import {
     isPost } from 'shared/undo/reducer';
 
 import { getCurrentState } from 'shared/undo/selectors';
+import { getPersisted } from 'shared/app/selectors';
 
 const filterNamespaces = spaces => state => spaces.reduce(
     (newState, key) => ({ ...newState, [key]: state[key] }),
@@ -23,16 +24,21 @@ const filterNamespaces = spaces => state => spaces.reduce(
 const undoMiddlewareFactory = namespaces => {
     const spacesToPersist = filterNamespaces(namespaces);
     return store => {
+        const isPersisted = getPersisted(store.getState());
+        if (isPersisted) {
+            return next => action => next(action); // do nothing if it's interactive mode
+        }
         const iniState = getStorage('history');
         let undoState = historyReducer(iniState, { type: '@@INIT' });
+        if (undoState.currentIndex === undoState.history.length) {
+            undoState.currentIndex = undoState.currentIndex - 1;
+        }
         store.dispatch(redo({ nextState: getCurrentState(undoState) }));
-        console.log(JSON.stringify(undoState, null, 2));
 
         return next => action => {
             if ([UNDO, REDO].includes(action.type)) {
                 undoState = historyReducer(undoState, action);
                 putStorage('history', undoState);
-                console.log(JSON.stringify(undoState, null, 2));
 
                 return next({
                     ...action,
@@ -50,7 +56,6 @@ const undoMiddlewareFactory = namespaces => {
                     nextState,
                     isPost: isPost(action),
                 }));
-                console.log(JSON.stringify(undoState, null, 2));
 
                 putStorage('history', undoState);
                 return nextAction;

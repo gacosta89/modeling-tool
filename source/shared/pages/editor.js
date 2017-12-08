@@ -5,6 +5,8 @@ import styled from 'styled-components';
 
 import { setRootRel } from 'shared/model/reducer';
 
+import { getIsInteractiveMode } from 'shared/app/selectors';
+
 import Paper from 'material-ui/Paper';
 
 import DrawingArea from 'shared/model/view/drawingArea';
@@ -30,10 +32,14 @@ const Wrapper = styled.div`
     flex: 1;
     display: flex;
     align-items: stretch;
+    padding: 10px;
+    position: relative;
 `;
 
 @connect(
-    null,
+    state => ({
+        interactive: getIsInteractiveMode(state),
+    }),
     dispatch => ({
         onMount: params => dispatch(setRootRel(params))
     })
@@ -48,7 +54,7 @@ class EditorContainer extends Component {
         return (
             <Wrapper>
                 <Editor>
-                    <ToolBar />
+                    { !this.props.interactive && <ToolBar/> }
                     <PaperContainer>
                         <DrawingArea />
                         <RenderingArea

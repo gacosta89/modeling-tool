@@ -3,6 +3,7 @@ import { routerReducer } from 'react-router-redux';
 
 import undoReducerFactory from 'shared/undo/reducer';
 
+import configReducer from 'shared/app/reducer/config';
 import modelReducer from 'shared/model/reducer';
 import picsReducer from 'shared/pics/reducer';
 
@@ -17,6 +18,7 @@ Rationale: compose reducers from different domains to create the rootReducer
 
 export default undoReducerFactory(combineReducers({
     routing: routerReducer,
+    config: configReducer,
     model: modelReducer,
     pics: picsReducer,
 }));

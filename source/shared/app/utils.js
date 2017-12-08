@@ -35,3 +35,10 @@ export const removeStorage = key => storageAvailable() ?
 
 export const putStorage = (key, value) => storageAvailable() ?
     localStorage.setItem(key, JSON.stringify(value)) : undefined;
+
+export const createIniData = data => {
+    const script = document.createElement('script');
+    script.setAttribute('id', 'iniData');
+    script.innerHTML = `window.BOOTSTRAP_CLIENT_STATE = ${data}`;
+    document.head.appendChild(script);
+};

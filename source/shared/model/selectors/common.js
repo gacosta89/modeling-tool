@@ -3,6 +3,9 @@ import { createSelector } from 'reselect';
 import { getFirstChilds } from 'shared/model/utils';
 
 import { EMPTY_NODE } from 'shared/model/constants';
+import { INTERACTIVE_MODE } from 'shared/app/constants';
+
+import { getAppMode } from 'shared/app/selectors';
 
 export const getNode = (state, id) => state.model.nodes[id] || EMPTY_NODE;
 
@@ -58,7 +61,9 @@ const getNodeField = field => (state, id) =>
 export const getNodeName = getNodeField('name');
 export const getNodeLevel = getNodeField('level');
 
-export const getPreview = state => state.model.preview;
+export const getPreview = state =>
+    getAppMode(state) === INTERACTIVE_MODE ?
+    true : state.model.preview;
 
 export const getUtilizedPicIds = createSelector(
     state => state.model.nodes,
