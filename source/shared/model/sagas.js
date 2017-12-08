@@ -17,7 +17,7 @@ import {
     SET_BACKGROUND_PIC,
     SET_BACKGROUND_PIC_SRC } from 'shared/pics/reducer';
 
-import { getAllPics } from 'shared/pics/selectors';
+import { getUtilizedPics } from 'shared/pics/selectors';
 
 const readFile = file => new Promise(res => {
     const reader = new FileReader();
@@ -49,16 +49,16 @@ const loadFile = function* ({ payload: { file }}) {
         yield put(setBackgroundPicSrc({ src, id }));
 
     } catch (e) {
-        console.error(e.message);
+        console.warn(e.message);
     }
 };
 
 const persistPics = function* () {
     try {
-        const pics = yield select(getAllPics);
+        const pics = yield select(getUtilizedPics);
         yield call(putStorage, 'pics', JSON.stringify(pics));
     } catch (e) {
-        console.error(e.message);
+        console.warn(e.message);
     }
 };
 
@@ -67,7 +67,7 @@ const readPics = function* () {
         const allPics = yield call(getStorage, 'pics');
         yield put(setPics({ allPics: allPics ? JSON.parse(allPics) : {}}));
     } catch (e) {
-        console.error(e.message);
+        console.warn('The pic you are loading is to big to save to local storage');
     }
 };
 

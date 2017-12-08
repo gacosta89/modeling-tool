@@ -106,6 +106,8 @@ of complexity of your codebase. How good you can get at moving an elephant?
 * Boilerplate, although I don't see it as a con but a sacrifice for all previous points.
 If we evaluate trade-offs, benefits win over cons.
 
+I have an article about this called [The truth behind redux boilerplate](https://medium.com/@graccba/the-truth-behind-redux-boilerplate-6af98492d45d)
+
 ## In deep rationale
 
 I've written down more in deep rationale of each piece of the architecture components.
@@ -121,6 +123,8 @@ I hope by reading this rationales and the explanation of the architecture,
 you can go through other domains and understand their structure ass well.
 
 ## Improvements / New features
+
+* Improve the interactions with tooling, as they are a bit basic.
 
 * Be able to specify relations between components, and show them interactivelly.
 

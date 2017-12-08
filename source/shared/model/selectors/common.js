@@ -59,3 +59,10 @@ export const getNodeName = getNodeField('name');
 export const getNodeLevel = getNodeField('level');
 
 export const getPreview = state => state.model.preview;
+
+export const getUtilizedPicIds = createSelector(
+    state => state.model.nodes,
+    nodes => Object.values(nodes)
+        .filter(node => node.backgroundImgId)
+        .map(node => node.backgroundImgId)
+);
