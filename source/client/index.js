@@ -22,30 +22,23 @@ const iniState = window.BOOTSTRAP_CLIENT_STATE || undefined;
 const sagaMiddleware = createSagaMiddleware(); // saga middleware for side-effects
 const routerMW = routerMiddleware(hashHistory); // sync browserHistory with router state
 
-if (process.env.NODE_ENV === 'production') { // production mode: without hot reloading
-    const store = createStore( // create the store with reducers
-        rootReducer,
-        iniState,
-        applyMiddleware(routerMW, sagaMiddleware, undoMiddleware(['model']))
-    );
-    sagaMiddleware.run(rootSaga); // run sagas for IO
-    const history = syncHistoryWithStore(hashHistory, store);
+const { AppContainer } = require('react-hot-loader');
+const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose; // eslint-disable-line no-underscore-dangle
+const store = createStore(
+    rootReducer,
+    iniState,
+    composeEnhancers(applyMiddleware(routerMW, sagaMiddleware, undoMiddleware(['model'])))
+);
 
+sagaMiddleware.run(rootSaga); // run sagas for IO
+const history = syncHistoryWithStore(hashHistory, store);
+
+if (process.env.NODE_ENV === 'production') { // production mode: without hot reloading
     ReactDOM.render( // mount the view layer
         <App history={history} store={store} i18n={i18n}/>,
         document.getElementById('root')
     );
 } else { // dev mode with hot reloading reducers and components
-    const { AppContainer } = require('react-hot-loader');
-    const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose; // eslint-disable-line no-underscore-dangle
-    const store = createStore(
-        rootReducer,
-        iniState,
-        composeEnhancers(applyMiddleware(routerMW, sagaMiddleware, undoMiddleware(['model'])))
-    );
-    sagaMiddleware.run(rootSaga);
-    const history = syncHistoryWithStore(hashHistory, store);
-
     ReactDOM.render(
         <AppContainer>
             <App history={ history } store={ store } i18n={i18n} />
