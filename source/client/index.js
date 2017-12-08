@@ -4,7 +4,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 
 import { createStore, compose, applyMiddleware } from 'redux';
-import { browserHistory } from 'react-router';
+import { hashHistory } from 'react-router';
 import { syncHistoryWithStore, routerMiddleware } from 'react-router-redux';
 
 import createSagaMiddleware from 'redux-saga';
@@ -20,7 +20,7 @@ import undoMiddleware from 'shared/undo/middleware';
 const iniState = window.BOOTSTRAP_CLIENT_STATE || undefined;
 
 const sagaMiddleware = createSagaMiddleware(); // saga middleware for side-effects
-const routerMW = routerMiddleware(browserHistory); // sync browserHistory with router state
+const routerMW = routerMiddleware(hashHistory); // sync browserHistory with router state
 
 if (process.env.NODE_ENV === 'production') { // production mode: without hot reloading
     const store = createStore( // create the store with reducers
@@ -29,7 +29,7 @@ if (process.env.NODE_ENV === 'production') { // production mode: without hot rel
         applyMiddleware(routerMW, sagaMiddleware, undoMiddleware(['model']))
     );
     sagaMiddleware.run(rootSaga); // run sagas for IO
-    const history = syncHistoryWithStore(browserHistory, store);
+    const history = syncHistoryWithStore(hashHistory, store);
 
     ReactDOM.render( // mount the view layer
         <App history={history} store={store} i18n={i18n}/>,
@@ -44,7 +44,7 @@ if (process.env.NODE_ENV === 'production') { // production mode: without hot rel
         composeEnhancers(applyMiddleware(routerMW, sagaMiddleware, undoMiddleware(['model'])))
     );
     sagaMiddleware.run(rootSaga);
-    const history = syncHistoryWithStore(browserHistory, store);
+    const history = syncHistoryWithStore(hashHistory, store);
 
     ReactDOM.render(
         <AppContainer>

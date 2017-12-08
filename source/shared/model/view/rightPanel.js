@@ -43,7 +43,7 @@ const ToolBarContainer = () =>
         </Button>
         <Button
             raised
-            href={INTERACTIVE_PATH}
+            href={`#${INTERACTIVE_PATH}`}
             target="_blank"
         >
             GENERATE
