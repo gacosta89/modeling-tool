@@ -53,7 +53,7 @@ const ParentFactory = connect(
             onMouseLeave={onLeave}
         >
             {
-                ids.map(                                     // recursively render child nodes
+                ids.map(      // recursively render child nodes
                     id => <ParentFactory key={id} id={id} />
                 )
             }

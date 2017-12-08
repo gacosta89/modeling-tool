@@ -18,7 +18,7 @@ const SelectionBox = styled.div`
     position: fixed;
 `;
 
-const getBoxSize = ({ ini, currX, currY, deltaX, deltaY }) => ({ // compute the selection box size
+const getBoxSize = ({ ini, currX, currY, deltaX, deltaY }) => ({
     width: Math.abs(currX - ini.absX), // TODO: compute width height, right and bottom when inversing the selection box
     height: Math.abs(currY - ini.absY),
     top: ini.absY + deltaY,
@@ -35,7 +35,7 @@ const getBoxSize = ({ ini, currX, currY, deltaX, deltaY }) => ({ // compute the 
         iniTap: getIniTap(state),
     }),
     dispatch => ({
-        onMouseUp: params => dispatch(drawNode(params)), // draw the node in the rendering area
+        onMouseUp: params => dispatch(drawNode(params)),
     })
 )
 class SelectionBoxContainer extends Component {
@@ -82,7 +82,7 @@ class SelectionBoxContainer extends Component {
 
     onMouseUp = () => {
         const { ini, currX, currY, deltaX, deltaY } = this.state;
-        this.props.onMouseUp({ // compute the final position  and dimentions of the box
+        this.props.onMouseUp({
             deltaX,
             deltaY,
             width: currX - ini.absX,
@@ -90,12 +90,12 @@ class SelectionBoxContainer extends Component {
         });
     }
 
-    componentDidMount () { // listen to mousemove events when the selection is active
+    componentDidMount () {
         window.addEventListener('mousemove', this.onMouseMove);
         window.addEventListener('mouseup', this.onMouseUp);
     }
 
-    componentWillUnmount () { // clean listeners when unmounting
+    componentWillUnmount () {
         window.removeEventListener('mousemove', this.onMouseMove);
         window.removeEventListener('mouseup', this.onMouseUp);
     }

@@ -23,7 +23,6 @@ const readFile = file => new Promise(res => {
     const reader = new FileReader();
 
     reader.onload = e => res(e.target.result);
-
     reader.readAsDataURL(file);
 });
 

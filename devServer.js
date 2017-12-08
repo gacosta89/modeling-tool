@@ -25,7 +25,6 @@ const server = new WebpackDevServer(compiler, {
                 renderLayout({
                     title: config.get('name'),
                     rootMarkup: '',
-                    initialState: {}
                 }));
         });
     }

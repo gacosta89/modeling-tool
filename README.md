@@ -1,142 +1,156 @@
-# Fancy Hello World
+# Modeling Tool
 
-A simple Node app ilustrating:
+A simple Box Modeling tool for documenting devices:
 
-* Universal JavaScript. *Routing & Rendering with shared components, shared store, & shared routes.*
-* State managed by Redux.
-* Standard ES6 modules using Babel + webpack.
-* React + JSX + ES7 object spread via Babel.
-* Express 4.x.
-* Useful scripts and conventions for app development.
+Features: 
 
-# Fork of the Universal React Boilerplate by cloverfield-tools
+* Create, resize, move boxes
+* Name this boxes and ad a description
+* Undo Redo
+* Auto save history and pics to local storage
+* Preview Mode
+* Generate an interactive model to share your work
 
-## Link to the original repo:
-[Universal React Boilerplate](https://github.com/cloverfield-tools/universal-react-boilerplate)
+## Prerequisites
 
-Why I made this project:
-* Even though Universal React Boilerplate is deprecated in favor of Next.js, I think I still find this project helpful for having a starting point for my apps and also to show developers how to wire a project with server side rendering, hot reloading, babel, webpack, react and redux.
-* To include hot reloading
-* To use docker
+Node JS:
+
+* [Node.js LTS](https://nodejs.org/es/download/)
+
+Yarn: 
+
+* [Yarn](https://yarnpkg.com/en/docs/install)
 
 ## Getting Started
 
-We're using an ES6 template string for the page skeleton + React to render the actual UI into the `root` div.
-
-The React render happens on both the server and the client using shared code. React components are written in class-free style using [pure components](https://github.com/ericelliott/react-pure-component-starter) wherever possible.
-
-
 ```
 yarn install
-yarn run build:dev
-yarn run dev
+yarn run build
+yarn run start
 ```
 
-Now the app should be running at http://0.0.0.0:3000/
+Now the app should be running at http://localhost:8080/
 
-## Universal JavaScript
+## Arquitecture
 
-Universal JavaScript (aka *"isomorphic JavaScript"*) means that it's designed to run a lot of the same code on both the client and the server. Typically that includes a lot of rendering and domain logic.
+The architecture is redux. And it consists of the following components:
 
-There are many advantages to building apps this way, but the primary advantages are:
+* Actions for describing user events, like create, toggle, tap, select.
+* Store for keeping the state of the app and reducers.
+* Reducers for the business logic.
+* Selectors as an encapsulation of the tree state shape.
+* React components as the presentational layer.
+* Sagas for IO/networking (side effects) and coordinating async flows
 
-* **Cross-functional teams.** Since everything is written in JavaScript, it's easier to build teams who know how to work on both the client and server sides of the app.
-* **Write once, run everywhere.** With the exception of a few library substitutions and browser polyfills, the code is shared, which means you have to write about half the code you'd write working on a non-universal app.
-* **More productive developers.** Since the app is more consistent across the stack, there's no context switching when you need to maintain application behavior on both sides of the stack. Write the behavior once, and you're done. Context switching slows developers down significantly.
+It has a unidirectional flow, meaning the pipeline starts by dispatching an action 
+to the store, the store takes the action and the current state and calls the reducer which
+will compute the next state. 
 
+After every action is dispatched and the next state computed, the store will call its 
+listeners, e.g. presentational components, to notify there's a new state available.
 
-## Tech stack
+Components will execute selectors on the new state to get their required props, thus 
+abstracting the component from the tree state shape. 
 
-The universal boilerplate uses standard JavaScript modules to author all of the code. All open-source modules are sourced from `npm`.
+* Note: selectors are smart enough to detect if the pice of the state they are observing 
+changed by immutable checks and only recompute if the data has changed.
 
+* Note: components are smart enough to detect if at least one of the props computed 
+by selectors have changed by immutable checks and only then re-render the component.
 
-## What's inside?
-
-There are some concerns that legitimately belong only on the server, or only on the client, so there are `client/` and `server/` directories for code that is specific to one or the other. Shared code goes in `shared/`:
-
-* `source/shared`    - Shared code.
-* `source/client` - For browser-only code.
-* `source/server` - For server-only code.
-
-
-## Index
-
-The `server/index` route serves dynamic content. Static assets are served from the `build` folder using `express.static`.
-
-
-## Scripts
-
-Some of these scripts may require a Unix/Linux environment. OS X and Linux come with appropriate terminals ready to roll. On Windows, you'll need git installed, which comes with Git Bash. That should work. 
-
-The `package.json` file comes with the following scripts that you may find useful:
-
-* `yarn run dev` runs a client-only devserver
-* `yarn run watch` runs a dev console that reports lint and unit test errors on save
-* `yarn run lint` lints the code under the project folder with eslint
-* `yarn run test` runs the commit tests and some smoketests
-* `yarn run build` rebuilds the client and the server
-* `yarn run deploy` creates a docker image
-* `yarn run start` starts the created docker image in a container
-* `yarn run stop` stops and removes the containers that run the image
-* `yarn run test:e2e` runs nightwatch against the docker container
-* `yarn run all` runs the deployment pipeline (fancy way to say all of the commands avove) 
-
-To run a script, open the terminal, navigate to the boilerplate directory, and type:
-
-```
-yarn run <name of script>
-```
+Finally sagas are async workers that sit and observe the flow of actions, and when
+the right action is triggered or the right flow is acomplished do a task 
+(fetch data from back end, save data, write the local storage).
 
 
-### Start
+## Benefits
 
-Start the dev server.
+I find this architecture beautiful and elegant, because it is simple. 
 
-```
-yarn run dev
-```
+### High separation of concerns: 
 
-##
-Log messages will be written to the console (stdout) in JSON format for convenient queries using tools like [Splunk](http://www.splunk.com/). You should be able to pipe the output to a third party logging service for aggregation without including that log aggregation logic in the app itself.
+* Good design is about decomposing a complex problem and work on a particular 
+piece of the problem at a time. This has to do with the limitation of our brain of not 
+being able to think about many things at once.
+
+* We can't predict the future but we can create a flexible codebase to adapt easilly 
+when the time comes. High separation of concerns creates an inherently flexible codebase.
+
+* Separation of concerns at multiple levels, not only high level layers, ergo decompsition, creates this highly reusable single responsability components that can be combined 
+in other ways to add new features or even create a entire new application.
+
+* It is super easy to unit test components, and this is done without mocking dependencies 
+thanks to this high level of separation of concerns. Unit testing is a necesary condition
+for software quality. We can make unit tests for every piece of the architecture, reducers, presentational components, even for sagas side effects.
 
 
-### Developer feedback console:
+### Simplicity
 
-```
-yarn run watch
-```
+* An inherently simple architecture allows team members to reason about
+the app quickly. Also, for new members to shorten the ramp-up time, as they have to learn
+the architecture once, and be confident that this will be the standard way through the whole app. 
 
-The dev console does the following:
+* From the previous point derives an increase in productivity.
 
-* Checks for syntax errors with `eslint` using idiomatic settings from `.eslintrc`
-* Runs the unit tests and reports any test failures.
-* Watches for file changes and re-runs the whole process.
+* You get an intuition of where a bug might be located, in which layer, which component.
 
-## Requiring modules
+* An simple codebase allows agility. If your codebase is complex and your's competitor is simple,
+he will be able to move from A to B straightforward while you try to move the elephant 
+of complexity of your codebase. How good you can get at moving an elephant?
 
-To require modules relative to the app root, just put them in `source` and require them just like you would require a module installed by npm. For example, if you had a file called `source/routes/index.js` you can require it with:
 
-```
-import routes from 'routes';
-```
+## Cons
 
-This is a lot cleaner than using relative paths and littering your code with stuff like `../../../module/path/module.js`.
+### Boilerplate
 
-This requires the `NODE_PATH` environment variable to be set to `source`. For example from the `package.json`:
+* Boilerplate, although I don't see it as a con but a sacrifice for all previous points.
+If we evaluate trade-offs, benefits win over cons.
 
-```js
-  scripts: {
-    "test": "NODE_PATH=source babel-node source/test/index.js",
-  }
-```
+## In deep rationale
 
-We also need to tell webpack configs (located in the project root) about the source path:
+I've written down more in deep rationale of each piece of the architecture components.
 
-```js
-  resolve: {
-    modules: [
-      'node_modules',
-      path.join(__dirname, 'source'),
-    ]
-  }
-```
+* Reducers and actions: `shared/model/reducer/index.js`
+* Reducers (handlers): `shared/model/reducer/handlers.js`
+* Selectors: `shared/model/selectors/style.js`
+* Presentational Components: `shared/model/view/drawingArea.js`
+* Presentational Components: `shared/model/view/renderingArea.js`
+* Sagas (IO): `shared/model/sagas.js`
+
+I hope by reading this rationales and the explanation of the architecture, 
+you can go through other domains and understand their structure ass well.
+
+## Improvements / New features
+
+* Be able to specify relations between components, and show them interactivelly.
+
+* Mirror mode for edition/creation. As immediate feedback of what a creative person 
+is doing is super important to have. In this mode you will have 2 windows, the editor 
+window and mirror window and you will see live how your changes affect what you are creating (the interactive model)
+
+* Fix exeded quota when saving images to the local storage
+
+## Wireing and Configuration
+
+The main entry point of the client app is `client/index.js`, and this is
+were most of the wireing is done.
+
+Top level components are found in the app domain `shared/app`, reducer, rootSaga, main (top level presentational component).
+
+The top level components are composed out of sub level domains, model, pics, undo, pages.
+
+There are other components present in the project like `shared/app/i18n`
+for internationalization or `shared/app/router` for routing
+that I didn't use in this particular project yet, but I concider 
+very important to have from the start of the project. 
+They are present because I started this project from other project of mine 
+[Fancy Hello World](https://github.com/gacosta89/fancy-helloworld)
+that abstracts me from the problem of wireing.
+
+There's a lot more of tooling for building, like yarn, webpack, eslint
+that support development. But I prefered to focus this README and project 
+on business value, productivity, and rationales I enumerated before.
+
+If you want to now more in detail of the wireing please feel free to
+contact me.
+

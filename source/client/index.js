@@ -17,21 +17,21 @@ import undoMiddleware from 'shared/undo/middleware';
 
 import 'normalize.css/normalize.css';
 
-const iniState = window.BOOTSTRAP_CLIENT_STATE || null;
+const iniState = window.BOOTSTRAP_CLIENT_STATE || undefined;
 
 const sagaMiddleware = createSagaMiddleware(); // saga middleware for side-effects
 const routerMW = routerMiddleware(browserHistory); // sync browserHistory with router state
 
 if (process.env.NODE_ENV === 'production') { // production mode: without hot reloading
-    const store = createStore(
+    const store = createStore( // create the store with reducers
         rootReducer,
         iniState,
         applyMiddleware(routerMW, sagaMiddleware, undoMiddleware(['model']))
     );
-    sagaMiddleware.run(rootSaga);
+    sagaMiddleware.run(rootSaga); // run sagas for IO
     const history = syncHistoryWithStore(browserHistory, store);
 
-    ReactDOM.render(
+    ReactDOM.render( // mount the view layer
         <App history={history} store={store} i18n={i18n}/>,
         document.getElementById('root')
     );
@@ -40,6 +40,7 @@ if (process.env.NODE_ENV === 'production') { // production mode: without hot rel
     const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose; // eslint-disable-line no-underscore-dangle
     const store = createStore(
         rootReducer,
+        iniState,
         composeEnhancers(applyMiddleware(routerMW, sagaMiddleware, undoMiddleware(['model'])))
     );
     sagaMiddleware.run(rootSaga);
@@ -52,7 +53,7 @@ if (process.env.NODE_ENV === 'production') { // production mode: without hot rel
         document.getElementById('root')
     );
 
-    module.hot.accept('shared/app/reducer', () => {
+    module.hot.accept('shared/app/reducer', () => { // configuration for hot reloading in dev mode
         store.replaceReducer(require('shared/app/reducer'));
     });
 
