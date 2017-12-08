@@ -1,10 +1,9 @@
-export default ({ title, rootMarkup }) => {
+export default ({ title }) => {
     return `
     <!doctype html>
     <html>
       <head>
         <title>${ title }</title>
-        <link rel="shortcut icon" type="image/png" href="/static/assets/favicon.png">
         <link href="/static/assets/normalize.css" rel="stylesheet" type="text/css">
         <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
         <style>
@@ -49,7 +48,7 @@ export default ({ title, rootMarkup }) => {
         </style>
       </head>
       <body>
-        <div id='root'>${ rootMarkup }</div>
+        <div id='root'></div>
         <script src="/static/index.js"></script>
       </body>
     </html>

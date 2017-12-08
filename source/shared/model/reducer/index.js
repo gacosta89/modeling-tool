@@ -158,8 +158,8 @@ toolMap = {
 }
 
 E.g.: when the user taps a node with the SELECT_TOOL active. The action type will be TAP_NODE,
-and the activeTool will be SELECT_TOOL, so the handler of the line 148 will be called.
-This selection of handler is done by the selectReducer util function (line 160) and used in lines 186 and 187
+and the activeTool will be SELECT_TOOL, so the handler of the line 168 will be called.
+This selection of handler is done by the selectReducer util function (line 181) and used in lines 207 and 208
 
 */
 

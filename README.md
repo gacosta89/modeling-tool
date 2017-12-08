@@ -2,10 +2,10 @@
 
 A simple Box Modeling tool for documenting devices:
 
-Features: 
+## Features: 
 
 * Create, resize, move boxes
-* Name this boxes and ad a description
+* Name this boxes and add a description
 * Undo Redo
 * Auto save history and pics to local storage
 * Preview Mode
@@ -31,7 +31,7 @@ yarn run start
 
 Now the app should be running at http://localhost:8080/
 
-## Arquitecture
+## Architecture
 
 The architecture is redux. And it consists of the following components:
 
@@ -59,7 +59,7 @@ changed by immutable checks and only recompute if the data has changed.
 by selectors have changed by immutable checks and only then re-render the component.
 
 Finally sagas are async workers that sit and observe the flow of actions, and when
-the right action is triggered or the right flow is acomplished do a task 
+the right action is triggered or the right flow is acomplished then do a task 
 (fetch data from back end, save data, write the local storage).
 
 
@@ -117,7 +117,7 @@ I've written down more in deep rationale of each piece of the architecture compo
 * Selectors: `shared/model/selectors/style.js`
 * Presentational Components: `shared/model/view/drawingArea.js`
 * Presentational Components: `shared/model/view/renderingArea.js`
-* Sagas (IO): `shared/model/sagas.js`
+* Sagas (IO): `shared/pics/sagas.js`
 
 I hope by reading this rationales and the explanation of the architecture, 
 you can go through other domains and understand their structure ass well.
@@ -139,7 +139,7 @@ window and mirror window and you will see live how your changes affect what you 
 The main entry point of the client app is `client/index.js`, and this is
 were most of the wireing is done.
 
-Top level components are found in the app domain `shared/app`, reducer, rootSaga, main (top level presentational component).
+Top level components are found in the app domain `shared/app`, reducer, sagas, main (top level presentational component).
 
 The top level components are composed out of sub level domains, model, pics, undo, pages.
 

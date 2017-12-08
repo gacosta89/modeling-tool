@@ -2,7 +2,7 @@
   "name": "modeling-tool",
   "private": "true",
   "version": "1.0.0",
-  "description": "Model and describe medical equipment",
+  "description": "Model and describe equipment",
   "scripts": {
     "lint": "eslint --cache .",
     "test": "cross-env NODE_PATH=source babel-node source/test/index.js",
@@ -12,7 +12,6 @@
     "build:dev": "webpack --config webpack.config.dev.js --bail",
     "build:server": "webpack --config webpack.config.server.js --bail",
     "start": "cross-env NODE_PATH=build node build/server/index.js",
-    "test:e2e": "babel-node scripts/e2e.js",
     "dev": "cross-env NODE_PATH=source babel-node devServer.js",
     "watch": "watch \"clear && npm run lint -s && npm run test -s\" source"
   },
@@ -85,5 +84,6 @@
     "webpack": "^3.4.1",
     "webpack-dev-server": "^2.6.1",
     "webpack-node-externals": "^1.5.4"
-  }
+  },
+  "license": "MIT"
 }

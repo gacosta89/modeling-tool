@@ -7,7 +7,7 @@ import { getSelectionActive } from 'shared/model/selectors';
 import SelectionBox from 'shared/model/view/selectionBox';
 
 /*
-Description: DrawingArea (styled-components)
+Description: DrawingArea (styled-components) presentational css.
 
 Rationale: I find much easier to have styles and html within the same file, as their logic is cohesive.
    This is also the rationale behind react components, as keeping the html separated from the js (view logic)

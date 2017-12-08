@@ -8,7 +8,8 @@ import {
 Description: createNode (handler / reducer)
 
 Rationale: Is where the magic happens, meaning compute the next state of the app
-  from the previous state and user action.
+  from the previous state and user action. Notice the signature of createNode
+  (prevState, action) => newState
 
   In this case when the user dispaches a TAP_NODE action, and the selected tool is BOX_TYPE
   the createNode handler will take care of appending the new node with its dimentions
