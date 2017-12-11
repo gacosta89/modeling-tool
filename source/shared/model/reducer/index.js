@@ -141,6 +141,9 @@ export const toggleHoverNode = namespace.createAction(TOGGLE_HOVER_NODE);
 export const TOGGLE_PREVIEW = namespace.defineType('TOGGLE_PREVIEW');
 export const togglePreview = namespace.createAction(TOGGLE_PREVIEW);
 
+export const COMMIT_NAMES = namespace.defineType('COMMIT_NAMES');
+export const commitNames = decorateUndoPost(namespace.createAction(COMMIT_NAMES));
+
 /*
 Description: toolMAP "smart" reducer structure.
 
@@ -159,7 +162,7 @@ toolMap = {
 
 E.g.: when the user taps a node with the SELECT_TOOL active. The action type will be TAP_NODE,
 and the activeTool will be SELECT_TOOL, so the handler of the line 168 will be called.
-This selection of handler is done by the selectReducer util function (line 181) and used in lines 207 and 208
+This selection of handler is done by the selectReducer util function (line 184) and used in lines 210 and 211
 
 */
 

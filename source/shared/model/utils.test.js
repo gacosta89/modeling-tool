@@ -46,11 +46,11 @@ test('getFirstChilds', nest => {
             'h1': {
                 childrenIds: ['h1h1', 'h1h2'],
             },
-            'h2h2h1': {
+            'h1h1h1': {
                 childrenIds: [],
             },
             'h1h1': {
-                childrenIds: [],
+                childrenIds: ['h1h1h1'],
             },
             'h2h1': {
                 childrenIds: [],
@@ -59,11 +59,11 @@ test('getFirstChilds', nest => {
                 childrenIds: [],
             },
             'h2h2': {
-                childrenIds: ['h2h2h1'],
+                childrenIds: [],
             },
         };
 
-        const expected = ['h1', 'h1h1', 'h1h2', 'h2', 'h2h1', 'h2h2', 'h2h2h1'];
+        const expected = ['h1', 'h1h1', 'h1h1h1', 'h1h2', 'h2', 'h2h1', 'h2h2'];
 
         const actual = getFirstChilds(nodes, [], 'h1', 'h2');
         assert.deepEqual(actual, expected, 'It should return the flat array of children ids ordered by level.');
