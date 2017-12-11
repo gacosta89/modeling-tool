@@ -124,7 +124,7 @@ I've written down more in deep rationale of each piece of the architecture compo
 * Sagas (IO): `shared/pics/sagas.js`
 
 I hope by reading this rationales and the explanation of the architecture, 
-you can go through other domains and understand their structure ass well.
+you can go through other domains and understand their structure as well.
 
 ## Improvements / New features
 

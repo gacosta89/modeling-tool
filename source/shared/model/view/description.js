@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
 
-import { setField } from 'shared/model/reducer';
+import { setField, commitNames } from 'shared/model/reducer';
 import {
     getNodeForDescription,
     getPreview } from 'shared/model/selectors';
@@ -61,7 +61,8 @@ const DescriptionContainer = ({
     description,
     onChangeField,
     disabled,
-    classes
+    classes,
+    onFocusOut,
 }) =>
     <Description>
         <FormControl className={classes.formControl}>
@@ -73,6 +74,7 @@ const DescriptionContainer = ({
                 value={name}
                 disabled={disabled}
                 id={NODE_NAME_ID}
+                onBlur={onFocusOut}
             />
         </FormControl>
         <FormControl className={classes.textareaContainer}>
@@ -84,6 +86,7 @@ const DescriptionContainer = ({
                     className={ classes.textarea }
                     value={ description }
                     onChange={onChangeField(NODE_DESCRIPTION)}
+                    onBlur={onFocusOut}
                 />
             </Text>
         </FormControl>
@@ -97,6 +100,7 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
     onChangeField: field => e => dispatch(setField({ field, value: e.target.value })),
+    onFocusOut: () => dispatch(commitNames()),
 });
 
 const noop = () => () => {};
@@ -106,6 +110,7 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => ({
     disabled: stateProps.preview,
     name: stateProps.name,
     description: stateProps.description,
+    onFocusOut: dispatchProps.onFocusOut,
     onChangeField: stateProps.preview ? noop : dispatchProps.onChangeField,
 });
 
