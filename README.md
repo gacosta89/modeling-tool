@@ -2,6 +2,14 @@
 
 A simple Box Modeling tool for documenting devices:
 
+## Demo of what you can generate with this tool
+
+![Model demo](https://raw.githubusercontent.com/gacosta89/modeling-tool/develop/demo/model.gif)
+
+## Edit Mode 
+
+![Edit Model](https://raw.githubusercontent.com/gacosta89/modeling-tool/develop/demo/edit.gif)
+
 ## Live in 
 
 * [Modeling Tool](https://gacosta89.github.io/modeling-tool/#/)
